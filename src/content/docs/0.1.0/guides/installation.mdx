@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: How to install nf-pediatric
+description: How to install sf-pediatric
 slug: 0.1.0/guides/installation
 ---
 
@@ -9,12 +9,12 @@ import CommandOutputs from '../../../../components/CommandOutputs.astro';
 
 ### **Prerequisites**
 
-While you do not need to install every software used within `nf-pediatric`, there is two core dependencies that need to be available at runtime:
+While you do not need to install every software used within `sf-pediatric`, there is two core dependencies that need to be available at runtime:
 
 <Steps>
   1. **Nextflow (>= 24.10.5)**
 
-     To install the `nextflow` executable, please refer to the [official `nextflow` documentation](https://www.nextflow.io/docs/latest/install.html). While `nf-pediatric` has a minimal `nextflow` version, it is always tested against the latest version available (and oldest), so you can go ahead and install the latest version available. If you plan on running the pipeline on an HPC server, you might want to validate it is not already installed by your server's admins.
+     To install the `nextflow` executable, please refer to the [official `nextflow` documentation](https://www.nextflow.io/docs/latest/install.html). While `sf-pediatric` has a minimal `nextflow` version, it is always tested against the latest version available (and oldest), so you can go ahead and install the latest version available. If you plan on running the pipeline on an HPC server, you might want to validate it is not already installed by your server's admins.
 
      **To validate `nextflow` is installed, you can run the following command:**
 
@@ -51,7 +51,7 @@ While you do not need to install every software used within `nf-pediatric`, ther
 
   2. **Docker OR Apptainer**
 
-     In order to avoid users installing all software dependencies used within `nf-pediatric`, the pipeline relies on containers for all processing steps. Those containers can be run using two technologies: **Docker** or **Apptainer**.
+     In order to avoid users installing all software dependencies used within `sf-pediatric`, the pipeline relies on containers for all processing steps. Those containers can be run using two technologies: **Docker** or **Apptainer**.
 
      <Steps>
        1. **Docker**
@@ -180,4 +180,4 @@ While you do not need to install every software used within `nf-pediatric`, ther
      </Steps>
 </Steps>
 
-Once everything installed and/or available, you can proceed to the [inputs section](/nf-pediatric/0.1.0/guides/inputs).
+Once everything installed and/or available, you can proceed to the [inputs section](/sf-pediatric/0.1.0/guides/inputs).

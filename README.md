@@ -1,4 +1,4 @@
-# nf-pediatric Documentation
+# sf-pediatric Documentation
 
 ## 🚀 Project Structure
 

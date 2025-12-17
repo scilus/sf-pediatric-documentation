@@ -1,6 +1,6 @@
 ---
 title: Pipeline Parameters
-description: nf-pediatric parameters
+description: sf-pediatric parameters
 slug: 0.1.0/guides/parameters
 ---
 
@@ -10,11 +10,11 @@ This section will detail how to set the inputs and outputs of the pipeline.
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
-| `input` | Path to the BIDS directory location. <details><summary>Help</summary><small>Ensure the BIDS data structure is respected. For more information, see the [documentation](https://scilus.github.io/nf-pediatric/guides/inputs/)</small></details>| `string` |  |  |  |
-| `participant_label` | List of participant IDs or a single participant ID. <details><summary>Help</summary><small>This will be used to select the specific participants to process. The best way to provide them is in a params.yml file, see the [documentation](https://scilus.github.io/nf-pediatric/guides/usage/#using-the-paramsyml-file) for more information.</small></details>| `array` |  |  |  |
+| `input` | Path to the BIDS directory location. <details><summary>Help</summary><small>Ensure the BIDS data structure is respected. For more information, see the [documentation](https://scilus.github.io/sf-pediatric/guides/inputs/)</small></details>| `string` |  |  |  |
+| `participant_label` | List of participant IDs or a single participant ID. <details><summary>Help</summary><small>This will be used to select the specific participants to process. The best way to provide them is in a params.yml file, see the [documentation](https://scilus.github.io/sf-pediatric/guides/usage/#using-the-paramsyml-file) for more information.</small></details>| `array` |  |  |  |
 | `input_deriv` | Path to the derivatives directory to use as input. | `string` |  |  |  |
 | `bids_script` | Path to the BIDS script. <details><summary>Help</summary><small>This is a script that will be used to generate the BIDS directory structure from the raw data. Unless you know what you are doing, this should not be changed. Will be removed in a future release.</small></details>| `string` |  |  | True |
-| `outdir` | The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure. <details><summary>Help</summary><small>For a detailed description of the output files, please see the [documentation](https://scilus.github.io/nf-pediatric/guides/outputs/).</small></details>| `string` |  | True |  |
+| `outdir` | The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure. <details><summary>Help</summary><small>For a detailed description of the output files, please see the [documentation](https://scilus.github.io/sf-pediatric/guides/outputs/).</small></details>| `string` |  | True |  |
 | `email` | Email address for completion summary. <details><summary>Help</summary><small>Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.</small></details>| `string` |  |  |  |
 | `multiqc_title_subject` | MultiQC report title for subject report. Printed as page header, used for filename if not otherwise specified. | `string` |  |  |  |
 | `multiqc_title_global` | MultiQC report title for global report. Printed as page header, used for filename if not otherwise specified. | `string` |  |  |  |
@@ -30,7 +30,7 @@ Options for FreeSurfer, FastSurfer, and/or M-CRIB-S processing. Only relevant if
 | `cerebnet` | Use CerebNet for cerebellum segmentation in FastSurfer. | `boolean` | False |  | True |
 | `hypvinn` | Use HypVINN for hypothalamus sub-segmentation in FastSurfer. | `boolean` | False |  | True |
 | `acq3T` | Use 3T acquisition parameters. | `boolean` | True |  | True |
-| `fs_output_dir` | Path to FreeSurfer/FastSurfer/M-CRIB-S output directory. <details><summary>Help</summary><small>Default location will be alongside `--outdir`. For more information, please see the [documentation](https://scilus.github.io/nf-pediatric/guides/outputs/)</small></details>| `string` |  |  | False |
+| `fs_output_dir` | Path to FreeSurfer/FastSurfer/M-CRIB-S output directory. <details><summary>Help</summary><small>Default location will be alongside `--outdir`. For more information, please see the [documentation](https://scilus.github.io/sf-pediatric/guides/outputs/)</small></details>| `string` |  |  | False |
 | `mcribs_jointhresh` | Join threshold used in the MCRIBS surface reconstruction step. | `number` |  |  | True |
 | `mcribs_fastcollision` | Use deformable fast collision test in the MCRIBS surface reconstruction step. | `boolean` | False |  | True |
 | `mcribs_nopialoutside` | Do not ensure pial is outside of WM in the MCRIBS surface reconstruction step. | `boolean` | False |  | True |
@@ -155,7 +155,7 @@ Options for fiber response function (FRF) processing. The FRF is derived from no
 | `frf_max_dti_shell_value` | Maximum DTI shell value used. | `integer` | 1600 |  | True |
 | `frf_min_fodf_shell_value` | Minimum FODF shell value used. | `integer` | 700 |  | True |
 | `frf_set_method` | Method used to compute the FRF. | `string` | ssst |  | False |
-| `frf_manual_frf` | Manual FRF values.(e.g. '15,4,4'). This is set from the normative curves. Use this option only to apply a single FRF to every participants. For more information, please see [the documentation](https://scilus.github.io/nf-pediatric/guides/priors/). | `string` |  |  | False |
+| `frf_manual_frf` | Manual FRF values.(e.g. '15,4,4'). This is set from the normative curves. Use this option only to apply a single FRF to every participants. For more information, please see [the documentation](https://scilus.github.io/sf-pediatric/guides/priors/). | `string` |  |  | False |
 
 ### **FODF Options**
 
@@ -260,9 +260,9 @@ Options for COMMIT filtering.
 |-----------|-----------|-----------|-----------|-----------|-----------|
 | `run_commit2` | Run COMMIT2 filtering. | `boolean` | True |  | False |
 | `commit2_lambda` | Lambda value used in the COMMIT filtering step. | `number` | 0.001 |  | True |
-| `commit_para_diff` | Para diff value used in the COMMIT filtering step. <details><summary>Help</summary><small>This value is derived from normative curves in function of each participant's age. For more information, please see [the documentation](https://scilus.github.io/nf-pediatric/guides/priors/).</small></details>| `string` |  |  | False |
-| `commit_iso_diff` | Iso diff value used in the COMMIT filtering step. <details><summary>Help</summary><small>This value is derived from normative curves in function of each participant's age. For more information, please see [the documentation](https://scilus.github.io/nf-pediatric/guides/priors/).</small></details>| `string` |  |  | False |
-| `commit_perp_diff` | Perp diff value used in the COMMIT filtering step. <details><summary>Help</summary><small>This value is derived from normative curves in function of each participant's age. For more information, please see [the documentation](https://scilus.github.io/nf-pediatric/guides/priors/).</small></details>| `string` |  |  | False |
+| `commit_para_diff` | Para diff value used in the COMMIT filtering step. <details><summary>Help</summary><small>This value is derived from normative curves in function of each participant's age. For more information, please see [the documentation](https://scilus.github.io/sf-pediatric/guides/priors/).</small></details>| `string` |  |  | False |
+| `commit_iso_diff` | Iso diff value used in the COMMIT filtering step. <details><summary>Help</summary><small>This value is derived from normative curves in function of each participant's age. For more information, please see [the documentation](https://scilus.github.io/sf-pediatric/guides/priors/).</small></details>| `string` |  |  | False |
+| `commit_perp_diff` | Perp diff value used in the COMMIT filtering step. <details><summary>Help</summary><small>This value is derived from normative curves in function of each participant's age. For more information, please see [the documentation](https://scilus.github.io/sf-pediatric/guides/priors/).</small></details>| `string` |  |  | False |
 | `commit_ball_stick` | Use the ball and stick model in the COMMIT filtering step. | `boolean` | False |  | True |
 | `commit_nbr_dir` | Number of directions used in the COMMIT filtering step. | `integer` | 500 |  | True |
 
@@ -304,7 +304,7 @@ Options for outputting to specific template space.
 
 ### **Pipeline profile**
 
-Pipeline profile options. This is a short list of options. For full description, please see [the documentation](https://scilus.github.io/nf-pediatric/guides/usage/#choosing-a-profile)
+Pipeline profile options. This is a short list of options. For full description, please see [the documentation](https://scilus.github.io/sf-pediatric/guides/usage/#choosing-a-profile)
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|

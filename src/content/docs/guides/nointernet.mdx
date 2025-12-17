@@ -1,6 +1,6 @@
 ---
-title: Running nf-pediatric without internet access
-description: How to run nf-pediatric with no internet access
+title: Running sf-pediatric without internet access
+description: How to run sf-pediatric with no internet access
 ---
 
 import { Steps } from '@astrojs/starlight/components';
@@ -74,7 +74,7 @@ Some computing nodes does not have access to internet at runtime. Since the pipe
     <CommandOutputs>
     <span slot="command">
     ```bash
-    nf-core pipelines download scilus/nf-pediatric -r 0.1.0 -o ./containers/ -s singularity -l docker.io -u copy --force
+    nf-core pipelines download scilus/sf-pediatric -r 0.1.0 -o ./containers/ -s singularity -l docker.io -u copy --force
     ```
     </span>
     <span slot="output">
@@ -96,7 +96,7 @@ Some computing nodes does not have access to internet at runtime. Since the pipe
     This is not recommended when downloading Singularity images, as it can take a long time and saves very little space.
     ? Choose compression type: none
     WARNING  Deleting existing output directory: 'containers'
-    INFO     Saving 'scilus/nf-pediatric'
+    INFO     Saving 'scilus/sf-pediatric'
             Pipeline revision: 'dev'
             Use containers: 'singularity'
             Container library: 'docker.io'
@@ -128,13 +128,13 @@ export NXF_APPTAINER_CACHEDIR=<path/to/download/location>
 </TabItem>
 </Tabs>
 
-Now you are good to go! Please refer to the [usage documentation on how to launch the pipeline](/nf-pediatric/guides/usage).
+Now you are good to go! Please refer to the [usage documentation on how to launch the pipeline](/sf-pediatric/guides/usage).
 
 
 ### **Downloading TemplateFlow templates**
 
-`nf-pediatric` allows users to select a specific output space in which all subject will be registered. Those templates are fetch using the [TemplateFlow Archive](https://www.templateflow.org/) [(Ciric _et al_, 2022)](https://doi.org/10.1038/s41592-022-01681-2). While downloading is directly handled in `nf-pediatric` when internet is available, for offline use, the selected template (using the [`--template`](/nf-pediatric/guides/parameters#output-to-template-options)) needs to be available. You can refer to the [official TemplateFlow documentation](https://www.templateflow.org/usage/archive/) for information on how to download the archive using either `datalad` or the Python client.
+`sf-pediatric` allows users to select a specific output space in which all subject will be registered. Those templates are fetch using the [TemplateFlow Archive](https://www.templateflow.org/) [(Ciric _et al_, 2022)](https://doi.org/10.1038/s41592-022-01681-2). While downloading is directly handled in `sf-pediatric` when internet is available, for offline use, the selected template (using the [`--template`](/sf-pediatric/guides/parameters#output-to-template-options)) needs to be available. You can refer to the [official TemplateFlow documentation](https://www.templateflow.org/usage/archive/) for information on how to download the archive using either `datalad` or the Python client.
 
 :::note
-Similar to the containers, `nf-pediatric` needs to be told where to look for those downloaded templates. This can be done using the [`--templateflow_home`](/nf-pediatric/guides/parameters#output-to-template-options) parameters.
+Similar to the containers, `sf-pediatric` needs to be told where to look for those downloaded templates. This can be done using the [`--templateflow_home`](/sf-pediatric/guides/parameters#output-to-template-options) parameters.
 :::

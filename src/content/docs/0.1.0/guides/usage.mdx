@@ -1,6 +1,6 @@
 ---
 title: Running the pipeline
-description: How to use nf-pediatric
+description: How to use sf-pediatric
 slug: 0.1.0/guides/usage
 ---
 
@@ -9,11 +9,11 @@ import { Tabs, TabItem } from '@astrojs/starlight/components';
 import { FileTree } from '@astrojs/starlight/components';
 import { Steps } from '@astrojs/starlight/components';
 
-![nf-pediatric pipeline schema](../../../../assets/0.1.0/nf-pediatric-schema.png)
+![sf-pediatric pipeline schema](../../../../assets/0.1.0/sf-pediatric-schema.png)
 
 ### **Choosing a profile**
 
-`nf-pediatric` core functionalities are accessed and selected using profiles. This means users can select which part of the pipeline they want to run depending on their specific aims and the current state of their data (already preprocessed or not). As of now, here is a list of the available profiles and a short description of their processing steps:
+`sf-pediatric` core functionalities are accessed and selected using profiles. This means users can select which part of the pipeline they want to run depending on their specific aims and the current state of their data (already preprocessed or not). As of now, here is a list of the available profiles and a short description of their processing steps:
 
 **Processing profiles**:
 
@@ -23,12 +23,12 @@ import { Steps } from '@astrojs/starlight/components';
      By selecting this profile, [FreeSurfer `recon-all`](https://surfer.nmr.mgh.harvard.edu/), [Recon-all-clinical](https://surfer.nmr.mgh.harvard.edu/fswiki/recon-all-clinical), [FastSurfer](https://deep-mi.org/research/fastsurfer/) or [M-CRIB-S/InfantFS](https://github.com/DevelopmentalImagingMCRI/MCRIBS) will be used to process the T1w/T2w images and the Brainnetome Child Atlas ([Li et al., 2022](https://doi.org/10.1093/cercor/bhac415)) or Desikan-Killiany (for infant (\< 3 months)) will be registered using surface-based methods in the native subject space.
 
      :::caution
-     **A valid FreeSurfer license file is required for this profile. Specify the path to your license using [`--fs_license`](/nf-pediatric/0.1.0/guides/parameters#segmentation-options).** If you don't have a valid license, you can register for one [here](https://surfer.nmr.mgh.harvard.edu/registration.html).
+     **A valid FreeSurfer license file is required for this profile. Specify the path to your license using [`--fs_license`](/sf-pediatric/0.1.0/guides/parameters#segmentation-options).** If you don't have a valid license, you can register for one [here](https://surfer.nmr.mgh.harvard.edu/registration.html).
      :::
 
   2. **`-profile tracking`:**
 
-     This is the core profile behind `nf-pediatric`. By selecting it, DWI data will be preprocessed (denoised, corrected for distortion, normalized, resampled, ...). In parallel, T1w will be preprocessed (if `-profile segmentation` is not selected), registered into diffusion space, and segmented to extract tissue masks/maps. Tissue segmentation method will be adapted based on the subject's age. Preprocessed DWI data will be used to fit both the DTI and fODF models. As the final step, whole-brain tractography will be performed using both local tracking/particle filter tracking (PFT) and concatenated into a single tractogram.
+     This is the core profile behind `sf-pediatric`. By selecting it, DWI data will be preprocessed (denoised, corrected for distortion, normalized, resampled, ...). In parallel, T1w will be preprocessed (if `-profile segmentation` is not selected), registered into diffusion space, and segmented to extract tissue masks/maps. Tissue segmentation method will be adapted based on the subject's age. Preprocessed DWI data will be used to fit both the DTI and fODF models. As the final step, whole-brain tractography will be performed using both local tracking/particle filter tracking (PFT) and concatenated into a single tractogram.
 
   3. **`-profile bundling`:**
 
@@ -76,7 +76,7 @@ The typical command for running the pipeline is as follows:
 <Tabs>
   <TabItem label="Command">
     ```bash
-    nextflow run scilus/nf-pediatric -r 0.1.0 --input <BIDS_directory> --outdir ./results -profile docker,tracking -resume
+    nextflow run scilus/sf-pediatric -r 0.1.0 --input <BIDS_directory> --outdir ./results -profile docker,tracking -resume
     ```
   </TabItem>
 </Tabs>
@@ -86,7 +86,7 @@ This will launch the pipeline with the `docker` configuration profile and will r
 <Steps>
   1. **`--input`**: for the path to your BIDS directory
 
-     For more details on how to organize your input folder, please refer to the [inputs section](/nf-pediatric/0.1.0/guides/inputs).
+     For more details on how to organize your input folder, please refer to the [inputs section](/sf-pediatric/0.1.0/guides/inputs).
 
      :::note
      A single or a subset of participants can be specified using `--participant-label`; this will constrain the pipeline to run only on those specified subjects. The recommended way of supplying those specific subject ids is to use a `params.yml` file. This will reduce the length of the command, and make sure you keep a trace of which subject was processed. For a specific example, please see [this section](#using-the-paramsyml-file).
@@ -94,14 +94,14 @@ This will launch the pipeline with the `docker` configuration profile and will r
 
   2. **`--outdir`**: path to the output directory
 
-     We do not specify a default for the output directory location to ensure that users have total control on where the output files will be stored, as it can quickly grow into a large number of files. The recommended naming would be something along the line of `nf-pediatric-v{version}` where `{version}` could be `0.1.0` for example.
+     We do not specify a default for the output directory location to ensure that users have total control on where the output files will be stored, as it can quickly grow into a large number of files. The recommended naming would be something along the line of `sf-pediatric-v{version}` where `{version}` could be `0.1.0` for example.
 
   3. **`-profile`**: profile to be run and container system to use
 
-     `nf-pediatric` processing steps was designed in profiles, giving users total control on which type of processing they want to make. One caveat is that users need to explicit tell which profile to run. This is done via the `-profile` parameter. To view the available processing profiles, please see [this section](#choosing-a-profile)
+     `sf-pediatric` processing steps was designed in profiles, giving users total control on which type of processing they want to make. One caveat is that users need to explicit tell which profile to run. This is done via the `-profile` parameter. To view the available processing profiles, please see [this section](#choosing-a-profile)
 
      :::note
-     The `-profile` command line parameter is a core `nextflow` parameter, hence the preceding single dash. This means you can also specify nextflow specific profile side-by-side `nf-pediatric` processing profiles (e.g., the docker/apptainer selection).
+     The `-profile` command line parameter is a core `nextflow` parameter, hence the preceding single dash. This means you can also specify nextflow specific profile side-by-side `sf-pediatric` processing profiles (e.g., the docker/apptainer selection).
      :::
 
   4. **`-resume`**: Enables `nextflow` caching capabilities.
@@ -110,18 +110,18 @@ This will launch the pipeline with the `docker` configuration profile and will r
 </Steps>
 
 :::note
-More parameters can be tuned to your own usage, for a concise list of the most common parameters, you can run `nextflow run scilus/nf-pediatric -r 0.1.0 --help`. Otherwise, for the complete list of parameters, please refer to the [parameters section](/nf-pediatric/0.1.0/guides/parameters) of the documentation.
+More parameters can be tuned to your own usage, for a concise list of the most common parameters, you can run `nextflow run scilus/sf-pediatric -r 0.1.0 --help`. Otherwise, for the complete list of parameters, please refer to the [parameters section](/sf-pediatric/0.1.0/guides/parameters) of the documentation.
 :::
 
 :::caution[Running the pipeline in offline mode]
-If the computer nodes you are planning to use do not have access to the internet, there is a few steps to go through to make sure the containers and templates are available during pipeline execution. Please head over to [running with no internet access section](/nf-pediatric/0.1.0/guides/nointernet).
+If the computer nodes you are planning to use do not have access to the internet, there is a few steps to go through to make sure the containers and templates are available during pipeline execution. Please head over to [running with no internet access section](/sf-pediatric/0.1.0/guides/nointernet).
 :::
 
 Note that the pipeline will create the following files in your working directory:
 
 <FileTree>
   * work/                           # Directory containing the nextflow working files
-  * nf-pediatric-v0.1.0/            # Finished results in specified location (defined with --outdir)
+  * sf-pediatric-v0.1.0/            # Finished results in specified location (defined with --outdir)
     * multiqc/
     * dataset\_description.json
     * README
@@ -150,7 +150,7 @@ The above pipeline run specified with a params file in yaml format:
 <Tabs>
   <TabItem label="Command">
     ```bash
-    nextflow run scilus/nf-pediatric -r 0.1.0 -profile docker -params-file params.yaml
+    nextflow run scilus/sf-pediatric -r 0.1.0 -profile docker -params-file params.yaml
     ```
   </TabItem>
 </Tabs>
@@ -178,7 +178,7 @@ participant_label:
 
 It is a good idea to specify the pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [scilus/nf-pediatric releases page](https://github.com/scilus/nf-pediatric/releases) and find the latest pipeline version - numeric only (eg. `0.1.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 0.1.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
+First, go to the [scilus/sf-pediatric releases page](https://github.com/scilus/sf-pediatric/releases) and find the latest pipeline version - numeric only (eg. `0.1.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 0.1.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
 

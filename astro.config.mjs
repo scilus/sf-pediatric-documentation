@@ -9,10 +9,10 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
 	site: "https://scilus.github.io",
-	base: "/nf-pediatric",
+	base: "/sf-pediatric",
 	integrations: [
 		starlight({
-			title: 'nf-pediatric',
+			title: 'sf-pediatric',
 			plugins: [
 				starlightVersions({
 					versions: [
@@ -25,7 +25,16 @@ export default defineConfig({
 				dark: './src/assets/logo_dark.svg',
 				replacesTitle: true,
 			},
-			social: [{ icon: 'github', label: 'nf-pediatric', href: 'https://github.com/scilus/nf-pediatric' }],
+            head: [
+                {
+                    tag: 'script',
+                    attrs: {
+                        src: 'https://scripts.simpleanalyticscdn.com/latest.js',
+                        defer: true,
+                    },
+                },
+            ],
+			social: [{ icon: 'github', label: 'sf-pediatric', href: 'https://github.com/scilus/sf-pediatric' }],
 			sidebar: [
 				{
 					label: 'Guides',
