@@ -73,7 +73,7 @@ jobs:
       - name: Checkout website code
         uses: actions/checkout@v4
         with:
-          repository: scilus/nf-pediatric-documentation
+          repository: scilus/sf-pediatric-documentation
 
       - name: Download pipeline parameters
         uses: actions/download-artifact@v4
