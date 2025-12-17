@@ -4,7 +4,7 @@ description: A reference page in my new Starlight docs site.
 slug: 0.1.0/reference/citation
 ---
 
-Until a paper is available (we are working on it!), please cite the github link in your research papers and all softwares used within `nf-pediatric`, here is a list of citations to include (adapt it depending on which profile you ran):
+Until a paper is available (we are working on it!), please cite the github link in your research papers and all softwares used within `sf-pediatric`, here is a list of citations to include (adapt it depending on which profile you ran):
 
 ### **Citations**
 
