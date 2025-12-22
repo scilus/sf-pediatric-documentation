@@ -3,7 +3,6 @@ title: Pipeline Parameters
 description: sf-pediatric parameters
 ---
 
-
 ### **Input/output options**
 
 This section will detail how to set the inputs and outputs of the pipeline.
@@ -25,7 +24,7 @@ Options for FreeSurfer, FastSurfer, and/or M-CRIB-S processing. Only relevant if
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
-| `method` | Method to use to perform surface reconstruction and cortical/subcortical segmentation. Will only affect subjects > 3 months of age. Recon-all-clinical is highly recommended for subjects between 3 months and 5 years old. Options include recon-all, recon-all-clinical, or FastSurfer. | `string` | recon-all-clinical |  | False |
+| `method` | Method to use to perform surface reconstruction and cortical/subcortical segmentation. Will only affect subjects > 3 months of age. Recon-all-clinical is highly recommended for subjects between 3 months and 5 years old. Options include recon-all, recon-all-clinical, or FastSurfer. (accepted: `recon-all-clinical`\|`recon-all`\|`fastsurfer`) | `string` | recon-all-clinical |  | False |
 | `fs_license` | Path to FreeSurfer license file. <details><summary>Help</summary><small>This is required to run the segmentation profile. You can obtain a FreeSurfer license from the [FreeSurfer website here](https://surfer.nmr.mgh.harvard.edu/registration.html).</small></details>| `string` |  |  |  |
 | `cerebnet` | Use CerebNet for cerebellum segmentation in FastSurfer. | `boolean` | False |  | True |
 | `hypvinn` | Use HypVINN for hypothalamus sub-segmentation in FastSurfer. | `boolean` | False |  | True |
@@ -93,7 +92,7 @@ Options for anatomical co-registration. Will only be performed if both T2w and T
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
 | `coreg_dimensionality` | Dimensionality of the registered images. | `integer` | 3 |  | True |
-| `coreg_transform` | Transform used in the coregistration step. t: translation (1 stage), r: rigid (1 stage), a: rigid + affine (2 stages), s: rigid + affine + deformable syn (3 stages) | `string` | a |  | False |
+| `coreg_transform` | Transform used in the coregistration step. t: translation (1 stage), r: rigid (1 stage), a: rigid + affine (2 stages), s: rigid + affine + deformable syn (3 stages) (accepted: `t`\|`r`\|`a`\|`s`) | `string` | a |  | False |
 | `coreg_quick` | Use antsRegistrationSyNQuick for the coregistration step. | `boolean` | False |  | False |
 
 ### **DWI Preprocessing Options**
@@ -139,7 +138,7 @@ Options for diffusion tensor fitting.
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
-| `dti_max_shell_value` | Maximum shell value used in the DTI processing step. | `integer` | 1600 |  | True |
+| `dti_max_shell_value` | Maximum shell value used in the DTI processing step. | `integer` | 1500 |  | True |
 | `dti_shells` | Shells used in the DTI processing step. | `string` |  |  | False |
 
 ### **FRF Options**
@@ -152,9 +151,9 @@ Options for fiber response function (FRF) processing. The FRF is derived from no
 | `frf_min_fa` | Minimum FA threshold to use to compute the FRF. | `number` | 0.5 |  | True |
 | `frf_nvox_min` | Minimum number of voxels to include in the computation of the FRF. | `integer` | 300 |  | True |
 | `frf_roi_radius` | Radius of the ROI used to compute the FRF. | `integer` | 20 |  | True |
-| `frf_max_dti_shell_value` | Maximum DTI shell value used. | `integer` | 1600 |  | True |
+| `frf_max_dti_shell_value` | Maximum DTI shell value used. | `integer` | 1500 |  | True |
 | `frf_min_fodf_shell_value` | Minimum FODF shell value used. | `integer` | 700 |  | True |
-| `frf_set_method` | Method used to compute the FRF. | `string` | ssst |  | False |
+| `frf_set_method` | Method used to compute the FRF. (accepted: `ssst`) | `string` | ssst |  | False |
 | `frf_manual_frf` | Manual FRF values.(e.g. '15,4,4'). This is set from the normative curves. Use this option only to apply a single FRF to every participants. For more information, please see [the documentation](https://scilus.github.io/sf-pediatric/guides/priors/). | `string` |  |  | False |
 
 ### **FODF Options**
@@ -166,12 +165,12 @@ Options for FODF processing.
 | `fodf_min_fodf_shell_value` | Minimum FODF shell value used. | `integer` | 700 |  | True |
 | `fodf_shells` | Shells used in the FODF processing step. | `string` |  |  | False |
 | `fodf_sh_order` | Spherical harmonics order used in the FODF processing step. | `integer` | 8 |  | False |
-| `fodf_sh_basis` | Spherical harmonics basis used in the FODF processing step. Choices: descoteaux07 or tournier07. | `string` | descoteaux07 |  | False |
-| `fodf_set_method` | Method used to compute the FODF. | `string` | ssst |  | False |
+| `fodf_sh_basis` | Spherical harmonics basis used in the FODF processing step. Choices: descoteaux07 or tournier07. (accepted: `descoteaux07`\|`tournier07`) | `string` | descoteaux07 |  | False |
+| `fodf_set_method` | Method used to compute the FODF. (accepted: `ssst`) | `string` | ssst |  | False |
 | `fodf_relative_threshold` | Relative threshold used in the FODF processing step. | `number` | 0.1 |  | True |
 | `fodf_a_factor` | FODF a factor used in the FODF processing step. | `number` | 2.0 |  | True |
 | `fodf_max_fa_threshold` | Maximum FA threshold used in the FODF processing step. | `number` | 0.1 |  | True |
-| `fodf_min_md_threshold` | Minimum MD threshold used in the FODF processing step. | `number` | 0.003 |  | True |
+| `fodf_min_md_threshold` | Minimum MD threshold used in the FODF processing step. | `number` | 0.002 |  | True |
 
 ### **PFT Tracking Options**
 
@@ -180,14 +179,14 @@ Options for Particle Filter Tracking (PFT).
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
 | `run_pft_tracking` | Run PFT tracking. | `boolean` | True |  | False |
-| `pft_seeding_mask_type` | Seeding mask type used in the PFT tracking step. Choices: wm, fa, or interface. | `string` | wm |  | False |
+| `pft_seeding_mask_type` | Seeding mask type used in the PFT tracking step. Choices: wm, fa, or interface. (accepted: `wm`\|`fa`\|`interface`) | `string` | wm |  | False |
 | `pft_fa_threshold` | FA threshold to use on FA map to generate seeding mask. | `number` | 0.2 |  | True |
 | `pft_random_seed` | Random seed used in the PFT tracking step. | `integer` | 1234 |  | True |
 | `pft_compress` | If true, compress the streamlines. | `boolean` | True |  | True |
 | `pft_compress_value` | Compression value for the streamlines' compression. | `number` | 0.2 |  | True |
-| `pft_algo` | Algorithm used in the PFT tracking step. Choices: prob or det | `string` | prob |  | False |
+| `pft_algo` | Algorithm used in the PFT tracking step. Choices: prob or det (accepted: `prob`\|`det`) | `string` | prob |  | False |
 | `pft_nbr_seeds` | Number of seeds used in the PFT tracking step. | `integer` | 10 |  | False |
-| `pft_seeding_type` | Seeding type used in the PFT tracking step. Choices: npv or nt. | `string` | npv |  | False |
+| `pft_seeding_type` | Seeding type used in the PFT tracking step. Choices: npv or nt. (accepted: `npv`\|`nt`) | `string` | npv |  | False |
 | `pft_step` | Step value used in the PFT tracking step. | `number` | 0.5 |  | True |
 | `pft_theta` | Theta value used in the PFT tracking step. | `number` | 20 |  | True |
 | `pft_sfthres` | SF threshold used in the PFT tracking step. | `number` | 0.1 |  | True |
@@ -205,16 +204,16 @@ Options for local tracking.
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
 | `run_local_tracking` | Run local tracking. | `boolean` | True |  | False |
-| `local_seeding_mask_type` | Seeding mask type used in the local tracking step. | `string` | wm |  | False |
+| `local_seeding_mask_type` | Seeding mask type used in the local tracking step. (accepted: `wm`\|`fa`) | `string` | wm |  | False |
 | `local_fa_tracking_mask_threshold` | FA threshold used for the tracking mask. | `number` | 0.4 |  | True |
 | `local_fa_seeding_mask_threshold` | FA threshold used for the seeding mask. | `number` | 0.4 |  | True |
-| `local_tracking_mask_type` | Tracking mask type used in the local tracking step. Choices: wm, fa, or interface. | `string` | wm |  | False |
+| `local_tracking_mask_type` | Tracking mask type used in the local tracking step. Choices: wm, fa, or interface. (accepted: `wm`\|`fa`) | `string` | wm |  | False |
 | `local_random_seed` | Random seed used in the local tracking step. | `integer` | 1234 |  | True |
 | `local_compress` | If true, compress the streamlines. | `boolean` | True |  | True |
 | `local_compress_value` | Compression value for the streamlines' compression. | `number` | 0.2 |  | True |
-| `local_algo` | Algorithm used in the local tracking step. Choices: prob or det | `string` | prob |  | False |
+| `local_algo` | Algorithm used in the local tracking step. Choices: prob or det (accepted: `prob`\|`det`) | `string` | prob |  | False |
 | `local_nbr_seeds` | Number of seeds used in the local tracking step. | `integer` | 10 |  | False |
-| `local_seeding_type` | Seeding type used in the local tracking step. Choices: npv or nt. | `string` | npv |  | False |
+| `local_seeding_type` | Seeding type used in the local tracking step. Choices: npv or nt. (accepted: `npv`\|`nt`) | `string` | npv |  | False |
 | `local_step` | Step value used in the local tracking step. | `number` | 0.5 |  | True |
 | `local_theta` | Theta value used in the local tracking step. | `number` | 20 |  | True |
 | `local_sfthres` | SF threshold used in the local tracking step. | `number` | 0.1 |  | True |
@@ -227,10 +226,13 @@ Options for BundleSeg
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
+| `atlas_directory` | Path to the WM bundles atlas directory. <details><summary>Help</summary><small>This allows you to specify a custom atlas for bundle segmentation. If not provided, the default atlas included with the pipeline will be used. NOTE: The provided atlas will be used with all participants without accounting for age.</small></details>| `string` | None |  | False |
 | `minimal_vote_ratio` | Ratio of vote across models to consider a streamline for saving. If you have 5 input models and a ratio of 0.5, you will need at least 3 votes. | `number` | 0.5 |  | False |
 | `outlier_alpha` | Percentage of the length of the tree that clusters of individual streamlines will be pruned. Higher values will remove more streamlines. | `number` | 0.6 |  | False |
 | `nb_points` | Number of points to segment the bundles. | `integer` | 5 |  | False |
 | `colormap` | Colormap to use for coloring the bundles. Color only affects visualization. | `string` | jet |  | False |
+| `use_hyperplane` | If set, will use hyperplane to segment bundles (still experimental), otherwise, will use the euclidean distance. | `boolean` | False |  | False |
+| `use_manhattan` | If set, will use manhattan distance to segment bundles, otherwise, will use the euclidean distance. | `boolean` | False |  | False |
 | `density_weighting` | If set, weight statistics based on the number of voxel going through the voxel. | `boolean` | True |  | False |
 | `normalize_weights` | If set, the weights will be normalized to the [0,1] range. | `boolean` | True |  | False |
 | `length_stats` | If set, will output bundles' length. | `boolean` | True |  | False |
@@ -249,8 +251,8 @@ Options for transforming labels from anatomical to diffusion space.
 |-----------|-----------|-----------|-----------|-----------|-----------|
 | `labels_transform_dimensionality` | Dimensionality of the label file. | `integer` | 3 |  | True |
 | `labels_output_suffix` | Name to use as suffix in the output filename. | `string` | _labels |  | True |
-| `labels_interpolation` | Interpolation method used in the label transformation step. Choices: NearestNeighbor, Linear, or BSpline. | `string` | NearestNeighbor |  | True |
-| `labels_output_dtype` | Output data type used in the label transformation step. Choices: float or int. | `string` | int |  | True |
+| `labels_interpolation` | Interpolation method used in the label transformation step. Choices: NearestNeighbor, Linear, or BSpline. (accepted: `NearestNeighbor`\|`Linear`\|`BSpline`) | `string` | NearestNeighbor |  | True |
+| `labels_output_dtype` | Output data type used in the label transformation step. Choices: float or int. (accepted: `float`\|`int`) | `string` | int |  | True |
 
 ### **COMMIT Options**
 
@@ -333,7 +335,7 @@ Less common options for the pipeline, typically set in a config file.
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
 | `version` | Display version and exit. | `boolean` |  |  | True |
-| `publish_dir_mode` | Method used to save pipeline results to output directory. <details><summary>Help</summary><small>The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.</small></details>| `string` | copy |  | True |
+| `publish_dir_mode` | Method used to save pipeline results to output directory. (accepted: `symlink`\|`rellink`\|`link`\|`copy`\|`copyNoFollow`\|`move`) <details><summary>Help</summary><small>The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.</small></details>| `string` | copy |  | True |
 | `lean_output` | Do not copy intermediate files to output directory. | `boolean` |  |  | False |
 | `email_on_fail` | Email address for completion summary, only when pipeline fails. <details><summary>Help</summary><small>An email address to send a summary email to when the pipeline is completed - ONLY sent if the pipeline does not exit successfully.</small></details>| `string` |  |  | True |
 | `plaintext_email` | Send plain-text email instead of HTML. | `boolean` |  |  | True |
@@ -346,3 +348,6 @@ Less common options for the pipeline, typically set in a config file.
 | `validate_params` | Boolean whether to validate parameters against the schema at runtime | `boolean` | True |  | True |
 | `pipelines_testdata_base_path` | Base URL or local path to location of pipeline test dataset files | `string` | None |  | True |
 | `trace_report_suffix` | Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss. | `string` |  |  | True |
+| `help` | Display the help message. | `['boolean', 'string']` |  |  |  |
+| `help_full` | Display the full detailed help message. | `boolean` |  |  |  |
+| `show_hidden` | Display hidden parameters in the help message (only works when --help or --help_full are provided). | `boolean` |  |  |  |

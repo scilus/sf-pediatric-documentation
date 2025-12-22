@@ -17,3 +17,16 @@ The Nextflow `-bg` flag launches Nextflow in the background, detached from your 
 Alternatively, you can use `screen` / `tmux` or similar tool to create a detached session which you can log back into at a later time.
 Some HPC setups also allow you to run nextflow within a cluster job submitted your job scheduler (from where it submits more jobs).
 
+### **Q: When running the pipeline with multiple profiles, I quickly exceed my disk quota on my HPC server. How to solve this?**
+
+**A.** sf-pediatric is built using a modular architecture that allows **more than one** entrypoint. The key process that
+causes disk quota issues is the `work/` directory, which contains all intermediate data files ensuring the resumability of the
+pipeline. To avoid reaching the disk quota, we suggest you run the pipeline in chunks, starting with the [`tracking` profile](/sf-pediatric/guides/usage/#choosing-a-profile).
+Then, add the [`--input_deriv`](/sf-pediatric/guides/parameters/#inputoutput-options) parameter to tell the pipeline where to fetch its
+derivatives (you can set it with the same value as your output directory), and select the subsequent profile you want to run.
+
+:::caution[**Look at your QC reports**]
+To gain back your disk space, you need to delete the `work/` directory when completing a profile. This will free up some
+space that will be used to run the next profile you are interested in. Before deleting it, it is a good idea to **look 
+at the QC reports first**, otherwise you will lose the ability to resume the pipeline if something went wrong.
+:::

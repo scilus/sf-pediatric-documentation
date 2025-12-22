@@ -1,0 +1,67 @@
+---
+title: Inputs
+description: sf-pediatric inputs
+slug: 0.2.0/guides/inputs
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+
+### **BIDS input directory**
+
+The [BIDS (Brain Imaging Data Structure)](https://bids-specification.readthedocs.io/en/stable/) input directory is a standardized way to organize and describe neuroimaging and behavioral data. The sf-pediatric pipeline expects the input data to be organized in the BIDS format. Good resources to convert your raw DICOMs files in a BIDS structure include [dcm2bids](https://unfmontreal.github.io/Dcm2Bids/3.2.0/) and/or [heudiconv](https://heudiconv.readthedocs.io/en/latest/). It is recommended that users validate their BIDS layout using the official [bids-validator tool](https://hub.docker.com/r/bids/validator) docker image or the [web-based version](https://bids-standard.github.io/bids-validator/).
+
+### **Directory Structure**
+
+The most basic BIDS directory should have a similar structure (note that sessions folder are optional but recommended):
+
+<FileTree>
+  * bids\_directory
+    * **dataset\_description.json**
+    * **participants.tsv**
+    * sub-01
+      * ses-01
+        * anat
+          * sub-01\_ses-01\_T1w.nii.gz
+          * sub-01\_ses-01\_T1w.json
+          * sub-01\_ses-01\_T2w.nii.gz
+          * sub-01\_ses-01\_T2w.json
+        * dwi
+          * sub-01\_ses-01\_dwi.nii.gz
+          * sub-01\_ses-01\_dwi.json
+          * sub-01\_ses-01\_dwi.bval
+          * sub-01\_ses-01\_dwi.bvec
+        * fmap
+          * sub-01\_ses-01\_epi.nii.gz
+          * sub-01\_ses-01\_epi.json
+</FileTree>
+
+### **Required Files**
+
+* `dataset_description.json`: A JSON file describing the dataset.
+* `participants.tsv`: A TSV file listing the participants and their metadata. **`sf-pediatric` requires the participants' age to be supplied within this file, using `age` as the column name. If not available, the pipeline will return an error at runtime.**
+
+:::caution[Important!]
+The age can be specified using either **post conceptual age** (only recommended for infant data, for participants > 44 weeks post-conceptual age, users should supply age in years) or **years**. If multiple session are available for a single subject, each session needs to be entered in **different rows**.
+:::
+
+### **`participants.tsv` example**
+
+| participant\_id | session\_id   | age |
+| -------------- | ------------ | --- |
+| sub-test1      | ses-baseline | 42  |
+| sub-test1      | ses-time1    | 4   |
+| sub-test2      |              | 8   |
+| ...            | ...          | ... |
+
+:::note[Column separator]
+In order for `sf-pediatric` to properly read the `participants.tsv` file, columns need to be **tab-separated**. If the pipeline returns an error regarding age not being correctly entered, this should be the **first validation step** to take (e.g., ensure a single tab is separating each of your columns).
+:::
+
+### **Mandatory files per subject:**
+
+* `sub-<participant_id>/`: A directory for each participant containing their data.
+  * `anat/`: A directory containing anatomical MRI data (e.g., T1w, T2w). If both are available, the optimal one will be selected and both will be coregistered.
+    * `T1w` is **mandatory** for participants >= 3 months old.
+    * `T2w` is **mandatory** for participants \< 3 months old (only for the segmentation profile, otherwise a T1w will also work).
+  * `dwi/`: A directory containing diffusion-weighted imaging data (e.g., DWI, bval, bvec). Acquisition with both direction DWI data are also supported (e.g. AP/PA). Specify them according to the [BIDS guidelines](https://bids-specification.readthedocs.io/en/stable/modality-specific-files/magnetic-resonance-imaging-data.html)
+  * `fmap/`: A directory containing field map data (optional but recommended for distortion correction).

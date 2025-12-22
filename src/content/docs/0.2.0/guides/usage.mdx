@@ -1,0 +1,224 @@
+---
+title: Running the pipeline
+description: How to use sf-pediatric
+slug: 0.2.0/guides/usage
+---
+
+import CommandOutputs from '../../../../components/CommandOutputs.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { FileTree } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+
+![sf-pediatric pipeline schema](../../../../assets/0.2.0/sf-pediatric-schema.png)
+
+:::note[Don't hesitate to provide feedback!]
+This page describe the basic usage for sf-pediatric. If something is not clear for you, do not hesitate to open an issue on [sf-pediatric GitHub page](https://github.com/scilus/sf-pediatric.git).
+:::
+
+### **Choosing a profile**
+
+`sf-pediatric` core functionalities are accessed and selected using profiles. This means users can select which part of the pipeline they want to run depending on their specific aims and the current state of their data (already preprocessed or not). As of now, here is a list of the available profiles and a short description of their processing steps:
+
+**Processing profiles**:
+
+<Steps>
+  1. **`-profile segmentation`:**
+
+     By selecting this profile, [FreeSurfer `recon-all`](https://surfer.nmr.mgh.harvard.edu/), [Recon-all-clinical](https://surfer.nmr.mgh.harvard.edu/fswiki/recon-all-clinical), [FastSurfer](https://deep-mi.org/research/fastsurfer/) or [M-CRIB-S/InfantFS](https://github.com/DevelopmentalImagingMCRI/MCRIBS) will be used to process the T1w/T2w images and the Brainnetome Child Atlas ([Li et al., 2022](https://doi.org/10.1093/cercor/bhac415)) or Desikan-Killiany (for infant (\< 3 months)) will be registered using surface-based methods in the native subject space.
+
+     :::caution
+     **A valid FreeSurfer license file is required for this profile. Specify the path to your license using [`--fs_license`](/sf-pediatric/0.2.0/guides/parameters#segmentation-options).** If you don't have a valid license, you can register for one [here](https://surfer.nmr.mgh.harvard.edu/registration.html).
+     :::
+
+  2. **`-profile tracking`:**
+
+     This is the core profile behind `sf-pediatric`. By selecting it, DWI data will be preprocessed (denoised, corrected for distortion, normalized, resampled, ...). In parallel, T1w will be preprocessed (if `-profile segmentation` is not selected), registered into diffusion space, and segmented to extract tissue masks/maps. Tissue segmentation method will be adapted based on the subject's age. Preprocessed DWI data will be used to fit both the DTI and fODF models. As the final step, whole-brain tractography will be performed using both local tracking/particle filter tracking (PFT) and concatenated into a single tractogram.
+
+  3. **`-profile bundling`:**
+
+     This profile enables automatic bundle extraction from the processed whole-brain tractogram. By selecting it, bundle recognition will be performed in each subject using either the closest age-matched WM atlas (neonates, 3 months, 6 months, 12 months, 24 months, or children). Extracted bundles will then be filtered, uniformized, colored (affect only visualization), and tractometry will be performed to extract WM microstructure measures for each bundle. To use your own custom WM atlas, please see the [`--atlas_directory`](/sf-pediatric/0.2.0/guides/parameters/#bundleseg-options) parameter.
+
+  4. **`-profile connectomics`:**
+
+     By selecting this profile, labels will be registered in diffusion space and used to segment the tractogram into individual connections. The segmented tractogram will then be filtered, using [COMMIT](https://github.com/daducci/COMMIT) to remove false positive streamlines. Following filtering, connectivity matrices will be computed for a variety of metrics and outputted as numpy arrays usable for further statistical analysis.
+</Steps>
+
+**Configuration profiles**:
+
+<Steps>
+  1. **`-profile docker` (Recommended)**:
+
+     Each process will be run using Docker containers.
+
+  2. **`-profile apptainer` (Recommended)**:
+
+     Each process will be run using Apptainer images.
+
+  3. **`-profile arm`:**
+
+     Made to be use on computers with an ARM architecture (e.g., Mac M1,2,3,4). This is still **experimental**, depending on which profile you select, some containers might not be built for the ARM architecture. Feel free to open an issue if needed.
+
+  4. **`-profile slurm`:**
+
+     If selected, the SLURM job scheduler will be used to dispatch jobs.
+
+     :::note
+     Please note that, by using this profile, you might have to adapt the config files to your specific computer nodes architecture.
+     :::
+</Steps>
+
+**Using either `-profile docker` or `-profile apptainer` is highly recommended, as it controls the version of the software used and ensure reproducibility.** While it is technically possible to run the pipeline without Docker or Apptainer, the amount of dependencies to install is simply not worth it.
+
+:::note[Running the tracking, segmentation, and connectomics profiles]
+For example, to perform the end-to-end connectomics pipeline, users should select `-profile tracking,segmentation,connectomics`.
+:::
+
+### **Typical command-line**
+
+The typical command for running the pipeline is as follows:
+
+<Tabs>
+  <TabItem label="Command">
+    ```bash
+    nextflow run scilus/sf-pediatric -r 0.2.0 --input <BIDS_directory> --outdir ./results -profile docker,tracking -resume
+    ```
+  </TabItem>
+</Tabs>
+
+This will launch the pipeline with the `docker` configuration profile and will run the tracking processing steps. There are only 3 parameters that need to be supplied at runtime:
+
+<Steps>
+  1. **`--input`**: for the path to your BIDS directory
+
+     For more details on how to organize your input folder, please refer to the [inputs section](/sf-pediatric/0.2.0/guides/inputs).
+
+     :::note
+     A single or a subset of participants can be specified using `--participant-label`; this will constrain the pipeline to run only on those specified subjects. The recommended way of supplying those specific subject ids is to use a `params.yml` file. This will reduce the length of the command, and make sure you keep a trace of which subject was processed. For a specific example, please see [this section](#using-the-paramsyml-file).
+     :::
+
+  2. **`--outdir`**: path to the output directory
+
+     We do not specify a default for the output directory location to ensure that users have total control on where the output files will be stored, as it can quickly grow into a large number of files. The recommended naming would be something along the line of `sf-pediatric-v{version}` where `{version}` could be `0.2.0` for example.
+
+  3. **`-profile`**: profile to be run and container system to use
+
+     `sf-pediatric` processing steps was designed in profiles, giving users total control on which type of processing they want to make. One caveat is that users need to explicit tell which profile to run. This is done via the `-profile` parameter. To view the available processing profiles, please see [this section](#choosing-a-profile)
+
+     :::note
+     The `-profile` command line parameter is a core `nextflow` parameter, hence the preceding single dash. This means you can also specify nextflow specific profile side-by-side `sf-pediatric` processing profiles (e.g., the docker/apptainer selection).
+     :::
+
+  4. **`-resume`**: Enables `nextflow` caching capabilities.
+
+     This is a core `nextflow` arguments. It enables the resumability of your pipeline. In the event where the pipeline fails for a variety of reasons, the following run will start back where it left off. For more details, see the [core `nextflow` arguments section](#core-nextflow-arguments).
+</Steps>
+
+:::note
+More parameters can be tuned to your own usage, for a concise list of the most common parameters, you can run `nextflow run scilus/sf-pediatric -r 0.2.0 --help`. Otherwise, for the complete list of parameters, please refer to the [parameters section](/sf-pediatric/0.2.0/guides/parameters) of the documentation.
+:::
+
+:::caution[Running the pipeline in offline mode]
+If the computer nodes you are planning to use do not have access to the internet, there is a few steps to go through to make sure the containers and templates are available during pipeline execution. Please head over to [running with no internet access section](/sf-pediatric/0.2.0/guides/nointernet).
+:::
+
+Note that the pipeline will create the following files in your working directory:
+
+<FileTree>
+  * work/                           # Directory containing the nextflow working files
+  * sf-pediatric-v0.2.0/            # Finished results in specified location (defined with --outdir)
+    * multiqc/
+    * dataset\_description.json
+    * sub-01
+      * ses-01
+        * anat/
+        * dwi/
+        * figures/
+        * multiqc/
+        * xfm/
+  * .nextflow\_log                   # Log file from Nextflow
+  * ...                             # Other nextflow hidden files, eg. history of pipeline runs and old logs.
+</FileTree>
+
+### **Using the params.yml file**
+
+If you wish to repeatedly use the same parameters for multiple runs, rather than specifying each flag in the command, you can specify these in a params file.
+
+Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
+
+:::caution
+Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
+:::
+
+The above pipeline run specified with a params file in yaml format:
+
+<Tabs>
+  <TabItem label="Command">
+    ```bash
+    nextflow run scilus/sf-pediatric -r 0.2.0 -profile docker -params-file params.yaml
+    ```
+  </TabItem>
+</Tabs>
+
+with:
+
+```yaml title="params.yaml"
+input: '<BIDS_directory>/'
+outdir: './results/'
+<...>
+```
+
+To constrict the pipeline execution to specific subjects, you add the `participant_label` to the list:
+
+```yaml title="params_with_subs.yaml"
+input: '<BIDS_directory>/'
+outdir: './results/'
+participant_label:
+  - sub-01
+  - sub-02
+<...>
+```
+
+### **Reproducibility**
+
+It is a good idea to specify the pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
+
+First, go to the [scilus/sf-pediatric releases page](https://github.com/scilus/sf-pediatric/releases) and find the latest pipeline version - numeric only (eg. `0.2.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 0.2.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
+
+This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
+
+To further assist in reproducibility, you can use share and reuse [parameter files](#using-the-paramsyml-file) to repeat pipeline runs with the same settings without having to write out a command with every single parameter.
+
+:::tip
+If you wish to share such profile (such as upload as supplementary material for academic publications), make sure to NOT include cluster specific paths to files, nor institutional specific profiles.
+:::
+
+### **Core `nextflow` arguments**
+
+:::note
+These options are part of Nextflow and use a *single* hyphen (pipeline parameters use a double-hyphen)
+:::
+
+### **`-profile`**
+
+Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments.
+
+Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, and Apptainer) - see below.
+
+:::caution[Important!]
+We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
+:::
+
+The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to check if your system is supported, please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
+
+Note that multiple profiles can be loaded, for example: `-profile tracking,docker` - the order of arguments is important!
+They are loaded in sequence, so later profiles can overwrite earlier profiles. For a complete description of the available profiles, please see this [section](#choosing-a-profile).
+
+### **`-resume`**
+
+Specify this when restarting a pipeline. Nextflow will use cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously. For input to be considered the same, not only the names must be identical but the files' contents as well. For more info about this parameter, see [this blog post](https://www.nextflow.io/blog/2019/demystifying-nextflow-resume.html).
+
+You can also supply a run name to resume a specific run: `-resume [run-name]`. Use the `nextflow log` command to show previous run names.
+
+### **`-c`**
+
+Specify the path to a specific config file (this is a core Nextflow command). See the [nf-core website documentation](https://nf-co.re/usage/configuration) for more information.

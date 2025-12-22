@@ -17,6 +17,7 @@ export default defineConfig({
 				starlightVersions({
 					versions: [
 						{ slug: '0.1.0', label: 'v0.1.0' },
+						{ slug: '0.2.0', label: 'v0.2.0' },
 					],
 				}),
 			],
@@ -45,6 +46,7 @@ export default defineConfig({
 						{ label: 'Running the pipeline', slug: 'guides/usage' },
 						{ label: "Parameters", slug: 'guides/parameters' },
 						{ label: 'Outputs', slug: 'guides/outputs' },
+						{ label: 'Understanding the QC reports', slug: 'guides/qc' },
 						{ label: 'Age-adaptable priors', slug: 'guides/priors' },
 						{ label: 'Running with no internet access', slug: 'guides/nointernet' },
 						{ label: 'Frequently Asked Questions', slug: 'guides/faq' },
@@ -70,6 +72,15 @@ export default defineConfig({
 					"**/node_modules/**/*"
 				],
 			},
+		},
+	},
+	image: {
+		// Example: Enable the Sharp-based image service with a custom config
+		service: {
+		entrypoint: 'astro/assets/services/sharp',
+		config: {
+			limitInputPixels: false,
+		},
 		},
 	},
 });

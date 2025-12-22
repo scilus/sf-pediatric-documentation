@@ -1,0 +1,183 @@
+---
+title: Installation
+description: How to install sf-pediatric
+slug: 0.2.0/guides/installation
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import CommandOutputs from '../../../../components/CommandOutputs.astro';
+
+### **Prerequisites**
+
+While you do not need to install every software used within `sf-pediatric`, there is two core dependencies that need to be available at runtime:
+
+<Steps>
+  1. **Nextflow (>= 24.10.5)**
+
+     To install the `nextflow` executable, please refer to the [official `nextflow` documentation](https://www.nextflow.io/docs/latest/install.html). While `sf-pediatric` has a minimal `nextflow` version, it is always tested against the latest version available (and oldest), so you can go ahead and install the latest version available. If you plan on running the pipeline on an HPC server, you might want to validate it is not already installed by your server's admins.
+
+     **To validate `nextflow` is installed, you can run the following command:**
+
+     <CommandOutputs>
+       <span slot="command">
+         ```bash
+         nextflow run helloworld
+         ```
+       </span>
+
+       <span slot="output">
+         Check the command's output, you've been greeted in 4 different languages
+         (english, french, italian, spanish) !
+
+         ```bash
+         N E X T F L O W   ~  version 24.10.4
+
+         Pulling nextflow-io/helloworld ...
+         downloaded from https://github.com/nextflow-io/hello.git
+         Launching `https://github.com/nextflow-io/helloworld` [disturbed_mahavira] DSL2 - revision: afff16a9b4 [master]
+
+         executor >  local (4)
+         [59/71fa40] process > sayHello (4) [100%] 4 of 4 ✔
+         Bonjour world!
+
+         Hello world!
+
+         Ciao world!
+
+         Hola world!
+         ```
+       </span>
+     </CommandOutputs>
+
+  2. **Docker OR Apptainer**
+
+     In order to avoid users installing all software dependencies used within `sf-pediatric`, the pipeline relies on containers for all processing steps. Those containers can be run using two technologies: **Docker** or **Apptainer**.
+
+     <Steps>
+       1. **Docker**
+
+          When available, the pipeline should be used with Docker. It works on all OS systems, and can be installed following the [official documentation](https://www.docker.com/get-started/). On HPC servers, for example, Docker is often not allowed or supported, in this case, you should refer to the Apptainer section.
+
+          **To validate Docker is installed and available, you can run the following command:**
+
+          <CommandOutputs>
+            <span slot="command">
+              ```bash
+              docker run hello-world
+              ```
+            </span>
+
+            <span slot="output">
+              ```
+              Unable to find image 'hello-world:latest' locally
+              latest: Pulling from library/hello-world
+              e6590344b1a5: Pull complete 
+              Digest: sha256:bfbb0cc14f13f9ed1ae86abc2b9f11181dc50d779807ed3a3c5e55a6936dbdd5
+              Status: Downloaded newer image for hello-world:latest
+
+              Hello from Docker!
+
+              This message shows that your installation appears to be working correctly.
+              To generate this message, Docker took the following steps:
+              1. The Docker client contacted the Docker daemon.
+              2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+                  (amd64)
+              3. The Docker daemon created a new container from that image which runs the
+                  executable that produces the output you are currently reading.
+              4. The Docker daemon streamed that output to the Docker client, which sent it
+                  to your terminal.
+              To try something more ambitious, you can run an Ubuntu container with:
+
+              $ docker run -it ubuntu bash
+
+              Share images, automate workflows, and more with a free Docker ID:
+              https://hub.docker.com/
+              For more examples and ideas, visit:
+              https://docs.docker.com/get-started/
+              ```
+            </span>
+          </CommandOutputs>
+
+       2. **Apptainer**
+
+          Apptainer (previously singularity) is an alternative container system to Docker that works solely (for now) on Linux. On HPC servers, this will the container system that will mostly be used (often times already installed by the server's admins). If you need to install it, please refer to the [official documentation](https://apptainer.org/docs/user/latest/quick_start.html#installation).
+
+          **To validate Apptainer is installed and accessible, you can run the following command:**
+
+          <CommandOutputs>
+            <span slot="command">
+              ```bash
+              apptainer --help
+              ```
+            </span>
+
+            <span slot="output">
+              ```
+              Linux container platform optimized for High Performance Computing (HPC) and
+              Enterprise Performance Computing (EPC)
+
+              Usage:
+              apptainer [global options...]
+
+              Description:
+              Apptainer containers provide an application virtualization layer enabling
+              mobility of compute via both application and environment portability. With
+              Apptainer one is capable of building a root file system that runs on any
+              other Linux system where Apptainer is installed.
+
+              Options:
+                  --build-config    use configuration needed for building containers
+              -c, --config string   specify a configuration file (for root or
+                                      unprivileged installation only) (default
+                                      "/cvmfs/soft.computecanada.ca/easybuild/software/2020/Core/apptainer/1.2.4/etc/apptainer/apptainer.conf")
+              -d, --debug           print debugging information (highest verbosity)
+              -h, --help            help for apptainer
+                  --nocolor         print without color output (default False)
+              -q, --quiet           suppress normal output
+              -s, --silent          only print errors
+              -v, --verbose         print additional information
+                  --version         version for apptainer
+
+              Available Commands:
+              build       Build an Apptainer image
+              cache       Manage the local cache
+              capability  Manage Linux capabilities for users and groups
+              checkpoint  Manage container checkpoint state (experimental)
+              completion  Generate the autocompletion script for the specified shell
+              config      Manage various apptainer configuration (root user only)
+              delete      Deletes requested image from the library
+              exec        Run a command within a container
+              help        Help about any command
+              inspect     Show metadata for an image
+              instance    Manage containers running as services
+              key         Manage OpenPGP keys
+              oci         Manage OCI containers
+              overlay     Manage an EXT3 writable overlay image
+              plugin      Manage Apptainer plugins
+              pull        Pull an image from a URI
+              push        Upload image to the provided URI
+              remote      Manage apptainer remote endpoints, keyservers and OCI/Docker registry credentials
+              run         Run the user-defined default command within a container
+              run-help    Show the user-defined help for an image
+              search      Search a Container Library for images
+              shell       Run a shell within a container
+              sif         Manipulate Singularity Image Format (SIF) images
+              sign        Add digital signature(s) to an image
+              test        Run the user-defined tests within a container
+              verify      Verify digital signature(s) within an image
+              version     Show the version for Apptainer
+
+              Examples:
+              $ apptainer help <command> [<subcommand>]
+              $ apptainer help build
+              $ apptainer help instance start
+
+
+              For additional help or support, please visit https://apptainer.org/help/
+              ```
+            </span>
+          </CommandOutputs>
+     </Steps>
+</Steps>
+
+Once everything installed and/or available, you can proceed to the [inputs section](/sf-pediatric/0.2.0/guides/inputs).
