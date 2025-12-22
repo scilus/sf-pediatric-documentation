@@ -1,0 +1,140 @@
+---
+title: Running sf-pediatric without internet access
+description: How to run sf-pediatric with no internet access
+slug: 0.2.0/guides/nointernet
+---
+
+import { Steps } from '@astrojs/starlight/components';
+import CommandOutputs from '../../../../components/CommandOutputs.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+Some computing nodes does not have access to internet at runtime. Since the pipeline interacts with the containers repository and pull during execution, it won't work if the compute nodes do not have access to the internet. Fortunately, containers can be downloaded prior to the pipeline execution, and fetch locally during runtime. Here are a few steps to perform to get all of that working quickly:
+
+<Steps>
+  1. **Install `nf-core` tools**
+
+     `nf-core` tools is a nice Python package that provides utilities to interact with pipelines, such as downloading required containers destined for execution in offline settings. To install the package, please refer to the [official `nf-core` documentation](https://nf-co.re/docs/nf-core-tools/installation).
+
+     :::tip
+     If possible, install `nf-core` in a designated virtual Python environment. If your server/computer allows the use of conda, you will find instructions on how to create this environment on the [official `nf-core` documentation](https://nf-co.re/docs/nf-core-tools/installation). Otherwise, you can also create a `virtualenv` Python environment, please see the [documentation here](https://virtualenv.pypa.io/en/latest/installation.html).
+     :::
+
+  2. **Validate your installation**
+
+     <CommandOutputs>
+       <span slot="command">
+         ```bash
+         nf-core --version
+         ```
+       </span>
+
+       <span slot="output">
+         ```bash
+
+
+                                               ,--./,-.
+               ___     __   __   __   ___     /,-._.--~\ 
+         |\ | |__  __ /  ` /  \ |__) |__         }  {
+         | \| |       \__, \__/ |  \ |___     \`-._,-`-,
+                                               `._,._,'
+
+         nf-core/tools version 3.3.2 - https://nf-co.re
+
+         nf-core, version 3.3.2
+         ```
+       </span>
+     </CommandOutputs>
+
+  3. **Set environment variables for container download**
+
+     Prior to downloading the containers, we need to set some environment variables regarding how singularity/apptainer will handle cache location. Additionally, we need to set a `nextflow` variable that will tell in which directory we want to place or final containers. This can be done using the following four commands (we use both singularity and apptainer to cover all possible use cases):
+
+     <Tabs>
+       <TabItem label="Command">
+         ```bash
+         export SINGULARITY_CACHEDIR=<path/to/cache/location>
+         export APPTAINER_CACHEDIR=<path/to/cache/location>
+         export NXF_SINGULARITY_CACHEDIR=<path/to/download/location>
+         export NXF_APPTAINER_CACHEDIR=<path/to/download/location>
+         ```
+       </TabItem>
+     </Tabs>
+
+     :::tip[Handling cache location]
+     When downloading containers on a compute server, we suggest you set the cache location (`SINGULARITY_CACHEDIR`/`APPTAINER_CACHEDIR`) in a filesystem with a high file quota (such as the `scratch` folder for example). Otherwise, you might exceed your quota and end up with download errors.
+     :::
+
+  4. Run the `nf-core pipelines download`
+
+     To see the command options, you can use the `nf-core pipelines download -h` command that will list all possible options. However, we suggest you use those parameters (`-r` is the pipeline version you want to download, and `-o` is the output directory):
+
+     :::caution
+     In order for the download command to work, `nextflow` and `apptainer`/`singularity` need to be available.
+     :::
+
+     <CommandOutputs>
+       <span slot="command">
+         ```bash
+         nf-core pipelines download scilus/sf-pediatric -r 0.1.0 -o ./containers/ -s singularity -l docker.io -u copy --force
+         ```
+       </span>
+
+       <span slot="output">
+         ```bash
+
+
+                                               ,--./,-.
+               ___     __   __   __   ___     /,-._.--~\
+         |\ | |__  __ /  ` /  \ |__) |__         }  {
+         | \| |       \__, \__/ |  \ |___     \`-._,-`-,
+                                               `._,._,'
+
+         nf-core/tools version 3.4.0.dev0 - https://nf-co.re
+
+         WARNING  Could not find GitHub authentication token. Some API requests may fail.
+         INFO     Detected Nextflow version 25.04.6
+
+         If transferring the downloaded files to another system, it can be convenient to have everything compressed in a single file.
+         This is not recommended when downloading Singularity images, as it can take a long time and saves very little space.
+         ? Choose compression type: none
+         WARNING  Deleting existing output directory: 'containers'
+         INFO     Saving 'scilus/sf-pediatric'
+                 Pipeline revision: 'dev'
+                 Use containers: 'singularity'
+                 Container library: 'docker.io'
+                 Using NXF_SINGULARITY_CACHEDIR': /scratch/agagnon/download/containers/'
+                 Output directory: 'containers'
+                 Include default institutional configuration: 'False'
+         INFO     Downloading workflow
+         INFO     Downloading workflow files from GitHub
+         ```
+       </span>
+     </CommandOutputs>
+
+     :::note
+     Downloading all containers takes ~45-60 minutes depending on how much parallel download you selected and requires a fair amount of local disk space. To accelerate the download process, you can set the `-d` parameter to the number of parallel download you desire (e.g., `-d 4` will perform 4 download concurrently).
+     :::
+</Steps>
+
+### **Reusing the downloaded containers during the pipeline execution**
+
+Once containers are downloaded, `nextflow` needs to be told where to look for those containers. If not already set, you need to reset the environment variables described above.
+
+<Tabs>
+  <TabItem label="Command">
+    ```bash
+    export NXF_SINGULARITY_CACHEDIR=<path/to/download/location>
+    export NXF_APPTAINER_CACHEDIR=<path/to/download/location>
+    ```
+  </TabItem>
+</Tabs>
+
+Now you are good to go! Please refer to the [usage documentation on how to launch the pipeline](/sf-pediatric/0.2.0/guides/usage).
+
+### **Downloading TemplateFlow templates**
+
+`sf-pediatric` allows users to select a specific output space in which all subject will be registered. Those templates are fetch using the [TemplateFlow Archive](https://www.templateflow.org/) [(Ciric *et al*, 2022)](https://doi.org/10.1038/s41592-022-01681-2). While downloading is directly handled in `sf-pediatric` when internet is available, for offline use, the selected template (using the [`--template`](/sf-pediatric/0.2.0/guides/parameters#output-to-template-options)) needs to be available. You can refer to the [official TemplateFlow documentation](https://www.templateflow.org/usage/archive/) for information on how to download the archive using either `datalad` or the Python client.
+
+:::note
+Similar to the containers, `sf-pediatric` needs to be told where to look for those downloaded templates. This can be done using the [`--templateflow_home`](/sf-pediatric/0.2.0/guides/parameters#output-to-template-options) parameters.
+:::
