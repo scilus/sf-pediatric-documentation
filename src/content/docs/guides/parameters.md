@@ -220,6 +220,39 @@ Options for local tracking.
 | `local_min_len` | Minimum length used in the local tracking step. | `number` | 20 |  | False |
 | `local_max_len` | Maximum length used in the local tracking step. | `number` | 200 |  | False |
 
+### **Diffusivities Options**
+
+Parameters for tuning diffusivities used in models fitting
+
+| Parameter | Description | Type | Default | Required | Hidden |
+|-----------|-----------|-----------|-----------|-----------|-----------|
+| `average_diff_priors` | If set to true, will compute the average diffusivities for the NODDI/Freewater models and average them across all subjects to use as fixed diffusivities for all subjects. | `boolean` | False |  | False |
+| `para_diff` | Parallel diffusivity value to use in models fitting (in mm^2/s). If not set, it will be derived from normative growth curves based on participant's age. | `number` |  |  | False |
+| `iso_diff` | Isotropic diffusivity value to use in models fitting (in mm^2/s). If not set, it will be derived from normative growth curves based on participant's age. | `number` |  |  | False |
+| `perp_diff` | Perpendicular diffusivity value to use in models fitting (in mm^2/s). If not set, it will be derived from normative growth curves based on participant's age. | `number` |  |  | False |
+| `perp_diff_min` | Minimum perpendicular diffusivity value (in mm^2/s) to use in models fitting. If not set, it will be derived from normative growth curves based on participant's age | `number` |  |  | False |
+| `perp_diff_max` | Maximum perpendicular diffusivity value (in mm^2/s) to use in models fitting. If not set, it will be derived from normative growth curves based on participant's age | `number` |  |  | False |
+
+### **NODDI Options**
+
+Options for NODDI model fitting.
+
+| Parameter | Description | Type | Default | Required | Hidden |
+|-----------|-----------|-----------|-----------|-----------|-----------|
+| `run_noddi` | Whether to run the NODDI processing step. If selected, the resulting metric maps will be added to the list used in the bundling and connectomics profile. | `boolean` | False |  | False |
+| `noddi_lambda1` | Value to use as the first regularization parameter (lambda1) in the NODDI fitting process. | `number` | 0.5 |  | True |
+| `noddi_lambda2` | Value to use as the second regularization parameter (lambda2) in the NODDI fitting process. | `number` | 0.001 |  | True |
+
+### **Freewater Options**
+
+Options for Freewater model fitting.
+
+| Parameter | Description | Type | Default | Required | Hidden |
+|-----------|-----------|-----------|-----------|-----------|-----------|
+| `run_freewater` | Whether to run the Freewater processing step. If selected, the resulting metric maps will be added to the list used in the bundling and connectomics profile. | `boolean` | False |  | False |
+| `freewater_lambda1` | Value to use as the first regularization parameter (lambda1) in the Freewater fitting process. | `number` | 0 |  | True |
+| `freewater_lambda2` | Value to use as the second regularization parameter (lambda2) in the Freewater fitting process. | `number` | 0.25 |  | True |
+
 ### **BundleSeg Options**
 
 Options for BundleSeg
@@ -262,9 +295,6 @@ Options for COMMIT filtering.
 |-----------|-----------|-----------|-----------|-----------|-----------|
 | `run_commit2` | Run COMMIT2 filtering. | `boolean` | True |  | False |
 | `commit2_lambda` | Lambda value used in the COMMIT filtering step. | `number` | 0.001 |  | True |
-| `commit_para_diff` | Para diff value used in the COMMIT filtering step. <details><summary>Help</summary><small>This value is derived from normative curves in function of each participant's age. For more information, please see [the documentation](https://scilus.github.io/sf-pediatric/guides/priors/).</small></details>| `string` |  |  | False |
-| `commit_iso_diff` | Iso diff value used in the COMMIT filtering step. <details><summary>Help</summary><small>This value is derived from normative curves in function of each participant's age. For more information, please see [the documentation](https://scilus.github.io/sf-pediatric/guides/priors/).</small></details>| `string` |  |  | False |
-| `commit_perp_diff` | Perp diff value used in the COMMIT filtering step. <details><summary>Help</summary><small>This value is derived from normative curves in function of each participant's age. For more information, please see [the documentation](https://scilus.github.io/sf-pediatric/guides/priors/).</small></details>| `string` |  |  | False |
 | `commit_ball_stick` | Use the ball and stick model in the COMMIT filtering step. | `boolean` | False |  | True |
 | `commit_nbr_dir` | Number of directions used in the COMMIT filtering step. | `integer` | 500 |  | True |
 
