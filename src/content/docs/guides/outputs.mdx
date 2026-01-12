@@ -192,6 +192,28 @@ The `dwi/` folder contains diffusion preprocessing outputs, local modeling resul
 - `*_space-DWI_label-exclude_desc-pft_probseg.nii.gz`: Exclude probability map for PFT tracking.
 - `*_space-DWI_label-include_desc-pft_probseg.nii.gz`: Include probability map for PFT tracking.
 
+#### Freewater Elimination (and freewater-corrected maps)
+
+- `*_desc-fwc_dwi.nii.gz`: Freewater-corrected DWI image.
+- `*_model-tensor_param-fa_desc-fwc_dwimap.nii.gz`: Freewater-corrected fractional anisotropy (FA) map in native diffusion space.
+- `*_model-tensor_param-md_desc-fwc_dwimap.nii.gz`: Freewater-corrected mean diffusivity (MD) map in native diffusion space.
+- `*_model-tensor_param-ad_desc-fwc_dwimap.nii.gz`: Freewater-corrected axial diffusivity (AD) map in native diffusion space.
+- `*_model-tensor_param-rd_desc-fwc_dwimap.nii.gz`: Freewater-corrected radial diffusivity (RD) map in native diffusion space.
+- `*_model-tensor_param-mode_desc-fwc_dwimap.nii.gz`: Freewater-corrected mode map in native diffusion space.
+- `*_model-tensor_param-ga_desc-fwc_dwimap.nii.gz`: Freewater-corrected geodesic anisotropy (GA) map in native diffusion space.
+- `*_model-tensor_param-rgb_desc-fwc_dwimap.nii.gz`: Freewater-corrected color-coded directional FA map in native diffusion space.
+- `*_model-tensor_param-diffusivity_desc-fwc_dwimap.nii.gz`: Freewater-corrected tensor diffusivity in native diffusion space.
+- `*_space-{template}_model-tensor_param-{fa,md,ad,rd,mode,ga,rgb}_desc-fwc_dwimap.nii.gz`: Freewater-corrected DTI metrics in template space.
+
+#### NODDI
+
+- `*_model-noddi_param-direction_dwimap.nii.gz`: Primary neurite orientation direction map in native diffusion space.
+- `*_model-noddi_param-fwf_dwimap.nii.gz`: Free water fraction (FWF) map in native diffusion space.
+- `*_model-noddi_param-icvf_dwimap.nii.gz`: Intracellular volume fraction (ICVF) map in native diffusion space.
+- `*_model-noddi_param-isovf_dwimap.nii.gz`: Isotropic volume fraction (ISOVF) map in native diffusion space.
+- `*_model-noddi_param-odi_dwimap.nii.gz`: Orientation dispersion index (ODI) map in native diffusion space.
+- `*_space-{template}_model-noddi_param-{fwf,icvf,isovf,odi}_dwimap.nii.gz`: NODDI metrics in template space.
+
 #### Bundles (in `bundles/` subdirectory)
 
 - `*_tract-{bundleName}_hemi-{left,right}_track-sdstream_tractogram.trk`: Individual bundle tractograms (cleaned, uniformized, and colored).
