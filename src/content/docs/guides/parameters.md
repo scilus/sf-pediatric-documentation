@@ -138,7 +138,7 @@ Options for diffusion tensor fitting.
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
-| `dti_max_shell_value` | Maximum shell value used in the DTI processing step. | `integer` | 1500 |  | True |
+| `dti_max_shell_value` | Maximum shell value used in the DTI processing step. | `integer` | 1200 |  | True |
 | `dti_shells` | Shells used in the DTI processing step. | `string` |  |  | False |
 
 ### **FRF Options**
@@ -151,7 +151,7 @@ Options for fiber response function (FRF) processing. The FRF is derived from no
 | `frf_min_fa` | Minimum FA threshold to use to compute the FRF. | `number` | 0.5 |  | True |
 | `frf_nvox_min` | Minimum number of voxels to include in the computation of the FRF. | `integer` | 300 |  | True |
 | `frf_roi_radius` | Radius of the ROI used to compute the FRF. | `integer` | 20 |  | True |
-| `frf_max_dti_shell_value` | Maximum DTI shell value used. | `integer` | 1500 |  | True |
+| `frf_max_dti_shell_value` | Maximum DTI shell value used. | `integer` | 1200 |  | True |
 | `frf_min_fodf_shell_value` | Minimum FODF shell value used. | `integer` | 700 |  | True |
 | `frf_set_method` | Method used to compute the FRF. (accepted: `ssst`) | `string` | ssst |  | False |
 | `frf_manual_frf` | Manual FRF values.(e.g. '15,4,4'). This is set from the normative curves. Use this option only to apply a single FRF to every participants. For more information, please see [the documentation](https://scilus.github.io/sf-pediatric/guides/priors/). | `string` |  |  | False |
@@ -239,7 +239,7 @@ Options for NODDI model fitting.
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
-| `run_noddi` | Whether to run the NODDI processing step. If selected, the resulting metric maps will be added to the list used in the bundling and connectomics profile. | `boolean` | False |  | False |
+| `run_noddi` | Whether to run the NODDI processing step. If selected, the resulting metric maps will be added to the list used in the bundling and connectomics profile. NODDI is only available for multi-shell acquisitions, for single-shell acquisitions, please consider using Freewater model instead. | `boolean` | False |  | False |
 | `noddi_lambda1` | Value to use as the first regularization parameter (lambda1) in the NODDI fitting process. | `number` | 0.5 |  | True |
 | `noddi_lambda2` | Value to use as the second regularization parameter (lambda2) in the NODDI fitting process. | `number` | 0.001 |  | True |
 
