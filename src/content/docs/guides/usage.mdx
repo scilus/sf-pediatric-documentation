@@ -83,7 +83,7 @@ The typical command for running the pipeline is as follows:
 <Tabs>
 <TabItem label="Command">
 ```bash
-nextflow run scilus/sf-pediatric -r 0.2.0 --input <BIDS_directory> --outdir ./results -profile docker,tracking -resume
+nextflow run scilus/sf-pediatric -r 0.2.1 --input <BIDS_directory> --outdir ./results -profile docker,tracking -resume
 ```
 </TabItem>
 </Tabs>
@@ -101,7 +101,7 @@ This will launch the pipeline with the `docker` configuration profile and will r
 
 2. **`--outdir`**: path to the output directory
    
-   We do not specify a default for the output directory location to ensure that users have total control on where the output files will be stored, as it can quickly grow into a large number of files. The recommended naming would be something along the line of `sf-pediatric-v{version}` where `{version}` could be `0.2.0` for example.
+   We do not specify a default for the output directory location to ensure that users have total control on where the output files will be stored, as it can quickly grow into a large number of files. The recommended naming would be something along the line of `sf-pediatric-v{version}` where `{version}` could be `0.2.1` for example.
 
 3. **`-profile`**: profile to be run and container system to use
 
@@ -118,7 +118,7 @@ This will launch the pipeline with the `docker` configuration profile and will r
 </Steps>
 
 :::note
-More parameters can be tuned to your own usage, for a concise list of the most common parameters, you can run `nextflow run scilus/sf-pediatric -r 0.2.0 --help`. Otherwise, for the complete list of parameters, please refer to the [parameters section](/sf-pediatric/guides/parameters) of the documentation.
+More parameters can be tuned to your own usage, for a concise list of the most common parameters, you can run `nextflow run scilus/sf-pediatric -r 0.2.1 --help`. Otherwise, for the complete list of parameters, please refer to the [parameters section](/sf-pediatric/guides/parameters) of the documentation.
 :::
 
 :::caution[Running the pipeline in offline mode]
@@ -129,7 +129,7 @@ Note that the pipeline will create the following files in your working directory
 
 <FileTree>
 - work/                           # Directory containing the nextflow working files
-- sf-pediatric-v0.2.0/            # Finished results in specified location (defined with --outdir)
+- sf-pediatric-v0.2.1/            # Finished results in specified location (defined with --outdir)
   - multiqc/
   - dataset_description.json
   - sub-01
@@ -158,7 +158,7 @@ The above pipeline run specified with a params file in yaml format:
 <Tabs>
 <TabItem label="Command">
 ```bash
-nextflow run scilus/sf-pediatric -r 0.2.0 -profile docker -params-file params.yaml
+nextflow run scilus/sf-pediatric -r 0.2.1 -profile docker -params-file params.yaml
 ```
 </TabItem>
 </Tabs>
@@ -186,7 +186,7 @@ participant_label:
 
 It is a good idea to specify the pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
 
-First, go to the [scilus/sf-pediatric releases page](https://github.com/scilus/sf-pediatric/releases) and find the latest pipeline version - numeric only (eg. `0.2.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 0.2.0`. Of course, you can switch to another version by changing the number after the `-r` flag.
+First, go to the [scilus/sf-pediatric releases page](https://github.com/scilus/sf-pediatric/releases) and find the latest pipeline version - numeric only (eg. `0.2.1`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 0.2.1`. Of course, you can switch to another version by changing the number after the `-r` flag.
 
 This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future. For example, at the bottom of the MultiQC reports.
 
