@@ -7,7 +7,7 @@ import { Steps } from '@astrojs/starlight/components';
 import CommandOutputs from '../../../components/CommandOutputs.astro';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Some computing nodes does not have access to internet at runtime. Since the pipeline interacts with the container repository and pull during execution, you will get errors if the compute nodes do not have access to the internet. Fortunately, containers can be downloaded prior to the pipeline execution, and fetch locally during runtime. To facilitate usage in this specific use case, we provide a download script, that handles all container downloads that will be required at runtime.
+Some computing nodes do not have access to the internet at runtime. Since the pipeline interacts with the container repository and containers are pulled during execution, you will get errors if the compute nodes do not have access to the internet. Fortunately, containers can be downloaded prior to pipeline execution and fetched locally during runtime. To facilitate usage in this specific use case, we provide a download script that handles all container downloads that will be required at runtime.
 
 ### **Downloading the containers**
 
@@ -15,10 +15,10 @@ Some computing nodes does not have access to internet at runtime. Since the pipe
 
 1. **Make sure you have all prerequisites**
 
-    The script relies on three dependencies that should already be available on your computer clusters:
+    The script relies on three dependencies that should already be available on your compute cluster:
 
     :::note[Loading a module on a compute cluster]
-    For example, on Alliance Canada's clusters, some softwares come prebundled into modules that you can easily load without having to install them yourself. 
+    For example, on Alliance Canada's clusters, some software comes bundled into modules that you can easily load without having to install them yourself. 
     In this case, you can load the `nextflow` module by using `module load nextflow`. Please refer to the documentation for your specific compute cluster.
     :::
 
@@ -122,7 +122,7 @@ Some computing nodes does not have access to internet at runtime. Since the pipe
 <Steps>
 1. **Set environment variables for pipeline execution**
 
-    Now that all containers are downloaded, we need to tell `nextflow` where to look for those containers. This can be done using environment variables. For example, if you run the pipeline in the same directory as you downloaded the containers, you should set those environment variables:
+    Now that all containers are downloaded, we need to tell Nextflow where to look for those containers. This can be done using environment variables. For example, if you run the pipeline in the same directory where you downloaded the containers, you should set these environment variables:
 
     <Tabs>
     <TabItem label="Command">
@@ -139,14 +139,14 @@ Some computing nodes does not have access to internet at runtime. Since the pipe
     In the code snippet above, we set the environment variables based on the default values of the download script. If you changed those values or moved the container folder, you should update those environment variables to point to the correct folder. Otherwise, the nextflow execution won't find the containers and error out.
     :::
 
-2. **Lauching `sf-pediatric` using the SLURM scheduler**
+2. **Launching `sf-pediatric` using the SLURM scheduler**
 
     One of the great advantage of `nextflow` is that it integrates natively with executors such as SLURM. This means that it can handle job submission for you, by submitting a single job per `nextflow` process. We currently have a designated profile for that, using `-profile slurm,apptainer`. However, since `nextflow` will handle all job submissions for you, it needs a few information prior to running the pipeline.
 
     First, since `nextflow` will interact for you with the SLURM scheduler, you can launch the pipeline directly on the login node using a terminal multiplexer (`tmux`/`screen`). The terminal multiplexer will enable the pipeline to keep running even if you disconnect from your server.
 
     :::tip[Opening, exiting, and reattaching a `tmux` session]
-    To open a `tmux` session, simply run `tmux` in the desired location. This will open a new session, in which you will run the pipeline as described below. To exit the session without killing it, use the `CTRL-B + D` shortcut. This will close the `tmux` session, but it keep running the pipeline for you. To reattach to this session, use `tmux a`. For more informations on how to use `tmux`, you can refer to this [cheat sheet](https://tmuxcheatsheet.com) or this [introduction](https://www.redhat.com/en/blog/introduction-tmux-linux).
+    To open a `tmux` session, simply run `tmux` in the desired location. This will open a new session, in which you will run the pipeline as described below. To exit the session without killing it, use the `CTRL-B + D` shortcut. This will close the `tmux` session, but it will keep running the pipeline for you. To reattach to this session, use `tmux a`. For more information on how to use `tmux`, you can refer to this [cheat sheet](https://tmuxcheatsheet.com) or this [introduction](https://www.redhat.com/en/blog/introduction-tmux-linux).
     :::
 
     Second, inside your `tmux` session, make sure you set your environment variables for your containers as described in section 3 above. Third, you need to set your allocation account to be used for submitting jobs. This can be done using environment variables:
@@ -167,9 +167,9 @@ Some computing nodes does not have access to internet at runtime. Since the pipe
     <TabItem label="Command">
     ```bash
     nextflow run scilus/sf-pediatric -r 0.2.1 \
-        --input <input_folder> \        # Change this.
-        --outdir <output_folder> \      # Change this.
-        -profile ...,slurm,apptainer \  # Add any processing profiles you want to run.
+        --input <input_folder> \           # Change this.
+        --outdir <output_folder> \         # Change this.
+        -profile ...,slurm,apptainer \     # Add any processing profiles you want to run.
         -resume
     ```
     </TabItem>
@@ -222,10 +222,10 @@ Some computing nodes does not have access to internet at runtime. Since the pipe
 
 ### **Running sf-pediatric within a single SBATCH job**
 
-Some clusters do not allow nextflow pipelines to run on login nodes (even though no processing is done on them, only job scheduling and orchestration). In this case, you should run the pipeline within a single SBATCH job. Here is an example, in which we ask for a single node with 40 cpus. 
+Some clusters do not allow Nextflow pipelines to run on login nodes (even though the login node only handles job scheduling and orchestration, not the actual data processing). In this case, you should run the pipeline within a single SBATCH job. Here is an example, in which we request a single node with 40 CPUs. 
 
 :::note[No `tmux` is required for single SBATCH jobs]
-Since all job management will be done directly on a compute node, we do not need to rely on a multiplexer to keep our job alive. This can also be a advantage of submitting a single SBATCH job if your compute cluster do not allow multiplexers.
+Since all job management will be done directly on a compute node, we do not need to rely on a multiplexer to keep our job alive. This can also be an advantage of submitting a single SBATCH job if your compute cluster does not allow multiplexers.
 :::
 
 <Tabs>
@@ -269,7 +269,7 @@ sbatch cmd_sfpediatric_sbatch.sh
 
 ### **Downloading TemplateFlow templates**
 
-`sf-pediatric` allows users to select a specific output space in which all subject will be registered. Those templates are fetch using the [TemplateFlow Archive](https://www.templateflow.org/) [(Ciric _et al_, 2022)](https://doi.org/10.1038/s41592-022-01681-2). While downloading is directly handled in `sf-pediatric` when internet is available, for offline use, the selected template (using the [`--template`](/sf-pediatric/guides/parameters#output-to-template-options)) needs to be available. You can refer to the [official TemplateFlow documentation](https://www.templateflow.org/usage/archive/) for information on how to download the archive using either `datalad` or the Python client.
+`sf-pediatric` allows users to select a specific output space in which all subjects will be registered. These templates are fetched using the [TemplateFlow Archive](https://www.templateflow.org/) [(Ciric _et al_, 2022)](https://doi.org/10.1038/s41592-022-01681-2). While downloading is directly handled in `sf-pediatric` when internet is available, for offline use, the selected template (specified using the [`--template`](/sf-pediatric/guides/parameters#output-to-template-options) parameter) needs to be available. You can refer to the [official TemplateFlow documentation](https://www.templateflow.org/usage/archive/) for information on how to download the archive using either `datalad` or the Python client.
 
 :::note
 Similar to the containers, `sf-pediatric` needs to be told where to look for those downloaded templates. This can be done using the [`--templateflow_home`](/sf-pediatric/guides/parameters#output-to-template-options) parameters.
