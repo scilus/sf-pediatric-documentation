@@ -1,0 +1,51 @@
+{
+  "sidebar": [
+    {
+      "label": "Guides",
+      "items": [
+        {
+          "label": "Installation",
+          "slug": "guides/installation"
+        },
+        {
+          "label": "Inputs",
+          "slug": "guides/inputs"
+        },
+        {
+          "label": "Running the pipeline",
+          "slug": "guides/usage"
+        },
+        {
+          "label": "Parameters",
+          "slug": "guides/parameters"
+        },
+        {
+          "label": "Outputs",
+          "slug": "guides/outputs"
+        },
+        {
+          "label": "Understanding the QC reports",
+          "slug": "guides/qc"
+        },
+        {
+          "label": "Age-adaptable priors",
+          "slug": "guides/priors"
+        },
+        {
+          "label": "Running with no internet access",
+          "slug": "guides/nointernet"
+        },
+        {
+          "label": "Frequently Asked Questions",
+          "slug": "guides/faq"
+        }
+      ]
+    },
+    {
+      "label": "Reference",
+      "autogenerate": {
+        "directory": "reference"
+      }
+    }
+  ]
+}

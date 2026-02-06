@@ -41,7 +41,7 @@ Some computing nodes do not have access to the internet at runtime. Since the pi
     <Tabs>
     <TabItem label="Command">
     ```bash
-    curl -fsSL https://raw.githubusercontent.com/nf-neuro/modules/main/assets/download_pipeline.sh | bash -s -- -p scilus/sf-pediatric -r 0.2.1 -d 1 -o ./containers -c ./singularity_cache
+    curl -fsSL https://raw.githubusercontent.com/nf-neuro/modules/main/assets/download_pipeline.sh | bash -s -- -p scilus/sf-pediatric -r 0.2.2 -d 1 -o ./containers -c ./singularity_cache
     ```
     </TabItem>
     <TabItem label="Expected Output">
@@ -51,14 +51,14 @@ Some computing nodes do not have access to the internet at runtime. Since the pi
 
     === Nextflow Pipeline Offline Downloader ===
     Pipeline: scilus/sf-pediatric
-    Revision: 0.2.1
+    Revision: 0.2.2
     Parallel downloads: 1
     Container directory: ./containers
     Cache directory: ./singularity_cache
 
     Step 1: Pulling Nextflow pipeline...
     Checking scilus/sf-pediatric ...
-    done - revision: 17bb3e73e0 [0.2.1]
+    done - revision: 17bb3e73e0 [0.2.2]
     ✓ Pipeline pulled successfully
 
     Step 2: Inspecting pipeline for container requirements...
@@ -166,7 +166,7 @@ Some computing nodes do not have access to the internet at runtime. Since the pi
     <Tabs>
     <TabItem label="Command">
     ```bash
-    nextflow run scilus/sf-pediatric -r 0.2.1 \
+    nextflow run scilus/sf-pediatric -r 0.2.2 \
         --input <input_folder> \           # Change this.
         --outdir <output_folder> \         # Change this.
         -profile ...,slurm,apptainer \     # Add any processing profiles you want to run.
@@ -199,7 +199,7 @@ Some computing nodes do not have access to the internet at runtime. Since the pi
     export SALLOC_ACCOUNT=$SLURM_ACCOUNT
 
     # Call for the pipeline execution.
-    nextflow run scilus/sf-pediatric -r 0.2.1 \
+    nextflow run scilus/sf-pediatric -r 0.2.2 \
         --input $input \
         --outdir $output \
         -profile ...,apptainer,slurm \      # Add any processing profiles you want to run.
@@ -248,7 +248,7 @@ module load nextflow apptainer
 export NXF_APPTAINER_CACHEDIR=<path/to/container_folder>    # Change this.
 
 # Call for the pipeline execution.
-nextflow run scilus/sf-pediatric -r 0.2.1 \
+nextflow run scilus/sf-pediatric -r 0.2.2 \
     --input <path/to/input_folder> \    # Change this.
     --outdir <path/to/output_folder> \  # Change this.
     -profile ...,apptainer,slurm \      # Add any processing profiles you want to run.
