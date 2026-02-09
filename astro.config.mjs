@@ -36,6 +36,13 @@ export default defineConfig({
                         defer: true,
                     },
                 },
+                {
+                    tag: 'script',
+                    attrs: {
+                        src: '/sf-pediatric/toggle-params.js',
+                        defer: true,
+                    },
+                },
             ],
 			social: [{ icon: 'github', label: 'sf-pediatric', href: 'https://github.com/scilus/sf-pediatric' }],
 			sidebar: [
@@ -45,12 +52,15 @@ export default defineConfig({
 						// Each item here is one entry in the navigation menu.
 						{ label: 'Installation', slug: 'guides/installation' },
 						{ label: 'Inputs', slug: 'guides/inputs' },
-						{ label: 'Running the pipeline', slug: 'guides/usage' },
+						{ label: "Understanding the profiles", slug: 'guides/profiles' },
+						{ label: 'Basic usage', slug: 'guides/usage' },
+						{ label: 'Advanced usage', slug: 'guides/advanced' },
 						{ label: "Parameters", slug: 'guides/parameters' },
 						{ label: 'Outputs', slug: 'guides/outputs' },
 						{ label: 'Understanding the QC reports', slug: 'guides/qc' },
 						{ label: 'Age-adaptable priors', slug: 'guides/priors' },
 						{ label: 'Running with no internet access', slug: 'guides/nointernet' },
+						{ label: 'Troubleshooting', slug: 'guides/troubleshooting' },
 						{ label: 'Frequently Asked Questions', slug: 'guides/faq' },
 					],
 				},
