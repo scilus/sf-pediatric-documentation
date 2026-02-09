@@ -69,3 +69,8 @@
 .sl-markdown-content table th:nth-child(6) {
 	display: none;
 }
+
+/* Hide rows where the Hidden column value is "True" */
+.sl-markdown-content table tbody tr.hidden-param {
+	display: none;
+}
