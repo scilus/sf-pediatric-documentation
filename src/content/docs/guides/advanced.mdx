@@ -1,0 +1,107 @@
+---
+title: Advanced usage
+description: Advanced configurations and options
+---
+
+import { Steps } from '@astrojs/starlight/components';
+
+## **Using a `params.yml` file**
+
+**When should I use a `params.yml` file to supply my parameters?**
+
+While you could always use a `params.yml` file to supply your custom parameters, it is mostly useful in two specific use-cases:
+
+<Steps>
+1. You want to select **more than a few subjects** using the [`--participant_label`](/sf-pediatric/guides/parameters/#inputoutput-options) parameter. 
+
+    Indeed, selecting more than 10 subjects can result in a long command-line call, which is prone to errors. Using the `params.file` can help making sure no errors are introduced, and also to keep track of which subjects have been processed.
+
+2. You are modifying a **lot of parameters** or you want to be sure you **save them** somewhere.
+    
+    In this case, the `params.yml` can be useful, as you can save it in your project directory and use it as a reference for a future processing run on different subjects or simply to report the parameters used in a publication. The `params.yml` file can also be shared with collaborators to ensure they use the same processing parameters as you did.
+</Steps>
+
+### **How to use a `params.yml` file**
+
+<Steps>
+
+1. Create a `params.yaml` file
+
+    To create your file, you can use any text editor you like. Using the `nano` text editor, simply call `nano params.yml` in the command-line. It will open up a text editor that you can fill up with your desired parameters. For example, if you want to run the pipeline on two subjects, specify your input/output directory, and select your shells for DTI and fODF fitting, your resulting `params.yml` would look something like this:
+
+    ```yaml title="params.yml"
+    input: '/path/to/BIDS/'
+    outdir: '/path/to/results/'
+    participant_label:
+        - sub-01
+        - sub-02
+    dti_shells: "0 1500"
+    fodf_shells: "0 1500 3000"
+    ```
+
+    Once filled, **save your file** (for the `nano` text editor, use `Ctrl + O` to write your file then `Ctrl + X` to exit the text editor).
+
+2. Run the pipeline with the new `params.yml` file
+
+    ```bash
+    nextflow run scilus/sf-pediatric -r 0.2.2 \
+    -profile docker,tracking \
+    -params-file params.yaml \
+    -resume
+    ```
+</Steps>
+
+:::caution[Important!]
+- **Use `-params-file`** (and **not `-c`**) to specify parameters
+- The `-c` flag is only for **advanced configuration** (resource tuning, cluster settings, etc.)
+:::
+
+## **Using the `-resume` flag**
+
+One of the great functionalities of `nextflow` is its **resumability**. This means that when you launch a pipeline on your data, and for some reason the pipeline fails at a specific step, your next execution will resume where it left off. In some cases, this can save days of processing. In every example in the `sf-pediatric` documentation, you will see that we added the `-resume` flag. This enables the pipeline's resumability and **should always be set**. 
+
+```bash
+# The pipeline will resume from where it left off if it has already been run
+nextflow run scilus/sf-pediatric -r 0.2.2 \
+   --input /path/to/BIDS \
+   --outdir /path/to/results \
+   -profile docker,tracking \
+   -resume
+```
+
+:::tip[Nextflow caches results based on file contents]
+If inputs haven't changed, it skips that step. Learn more in [this blog post](https://www.nextflow.io/blog/2019/demystifying-nextflow-resume.html).
+:::
+
+:::tip[You can resume from a specific run]
+If you want to resume the pipeline from a specific run, you can specify this by using the associated run name. For more details, see [Nextflow's documentation](https://www.nextflow.io/docs/latest/cache-and-resume.html#resuming-from-a-specific-run). Use `nextflow log` to see previous run names.
+
+```bash
+-resume [run-name]
+```
+:::
+
+## **Ensuring reproducibility**
+
+When possible, users should **always specify the pipeline version** with `-r`:
+
+```bash
+nextflow run scilus/sf-pediatric -r 0.2.2 \
+    <...>
+```
+
+This ensures you're using a specific version (in this case, 0.2.2) instead of whatever happens to be latest. It will also be easier when reporting how you processed your data in a publication by simply referring to the pipeline's version. Find versions on the [releases page](https://github.com/scilus/sf-pediatric/releases).
+
+## **Nextflow core arguments**
+
+These are Nextflow-specific options (note the single `-` instead of double `--`):
+
+### **`-c`** (Advanced)
+
+Specifies a custom configuration file for advanced users only. Use this for tuning computational resources or cluster-specific settings. They can be added to your command-line call using the `-c` parameter:
+
+```bash
+-c custom_config.config
+```
+
+See [nf-core configuration docs](https://nf-co.re/usage/configuration) for more information.
