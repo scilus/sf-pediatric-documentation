@@ -72,7 +72,41 @@ document.addEventListener('DOMContentLoaded', function() {
             const bgColor = isDark ? 'rgba(30, 30, 35, 0.9)' : 'var(--sl-color-bg-nav)';
             const shadowColor = isDark ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.1)';
             
-            button.style.cssText = `position: fixed; top: 4.4rem; right: 2rem; padding: 0.25rem 1rem; background-color: ${bgColor}; color: var(--sl-color-text); border: 1px solid var(--sl-color-gray-5); border-radius: 0.5rem; cursor: pointer; font-weight: 500; font-size: 0.875rem; z-index: 1000; box-shadow: 0 2px 8px ${shadowColor}; transition: all 0.2s ease; backdrop-filter: blur(10px);`;
+            // Function to position button relative to content container
+            function positionButton() {
+                const rect = contentContainer.getBoundingClientRect();
+                const rightSidebar = document.querySelector('.right-sidebar, [class*="starlight-aside"]');
+                
+                // Check if right sidebar exists and is truly visible (has width/height)
+                const sidebarVisible = rightSidebar && 
+                    window.getComputedStyle(rightSidebar).display !== 'none' &&
+                    rightSidebar.offsetWidth > 0 &&
+                    rightSidebar.offsetHeight > 0;
+
+                if (sidebarVisible) {
+                    // When sidebar is visible, position relative to content right edge
+                    const rightPos = window.innerWidth - rect.right + 16; // 16px (1rem) from right edge of content
+                    button.style.right = `${rightPos}px`;
+                    button.style.left = 'auto';
+                    button.style.transform = 'none';
+                    button.style.top = '7.5rem';
+                } else {
+                    // When sidebar is hidden, position at top right of viewport
+                    button.style.right = '2rem';
+                    button.style.left = 'auto';
+                    button.style.transform = 'none';
+                    button.style.top = '4.5rem';
+                }
+            }
+            
+            button.style.cssText = `position: fixed; padding: 0.25rem 1rem; background-color: ${bgColor}; color: var(--sl-color-text); border: 1px solid var(--sl-color-gray-5); border-radius: 0.5rem; cursor: pointer; font-weight: 500; font-size: 0.875rem; z-index: 1000; box-shadow: 0 2px 8px ${shadowColor}; transition: all 0.2s ease; backdrop-filter: blur(10px);`;
+            
+            // Position button initially
+            positionButton();
+            
+            // Reposition on window resize
+            window.addEventListener('resize', positionButton);
+            window.addEventListener('scroll', positionButton, { passive: true });
             
             // Listen for theme changes
             const observer = new MutationObserver(() => {
@@ -100,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.style.boxShadow = `0 2px 8px ${shadowColor}`;
             });
             
-            // Append button to body so it floats above everything
+            // Append button to body so it can use fixed positioning
             document.body.appendChild(button);
         }
     }
