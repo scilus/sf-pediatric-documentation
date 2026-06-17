@@ -1,0 +1,95 @@
+---
+title: Using custom atlases
+description: Using custom atlases for connectomics analyses
+---
+
+import { FileTree } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
+By default, `sf-pediatric` will use the Brainnetome atlas for preadolescents<sup>1</sup> to perform connectomics analyses.
+However, different analyses often require different cortical/subcortical atlases. To provide versatile connectomics analyses,
+users can supply their own custom atlas for connectome construction. This page covers the requirements and assumptions
+behind using custom atlases.
+
+## **Requirements**
+
+`sf-pediatric` relies on surface-based and volume-based registration techniques to warp template space atlases into subject
+space. To ensure mapping between spaces is performed correctly, we abide by the [BIDS definition for atlases](https://bids-specification.readthedocs.io/en/stable/derivatives/atlas.html)
+and require that atlases be in the `space-fsLR_den-32k` space. Using the default Brainnetome atlas for preadolescents as an
+example, the atlas folder should be structured as follows:
+
+<FileTree>
+- \<atlases_folder\>/BrainnetomeChild/
+    - atlas-BrainnetomeChild_description.json
+    - tpl-fsLR
+        - **tpl-fsLR_atlas-BrainnetomeChild_den-32k_dseg.dlabel.nii**
+        - tpl-fsLR_atlas-BrainnetomeChild_den-32k_dseg.json
+        - tpl-fsLR_atlas-BrainnetomeChild_den-32k_dseg.tsv
+</FileTree>
+
+The top-level `atlas-BrainnetomeChild_description.json` contains information on how the atlas was derived, related references,
+BIDS version, and other metadata. More information can be found [here](https://bids-specification.readthedocs.io/en/stable/derivatives/atlas.html#atlas-identification-and-metadata).
+The subdirectory `tpl-<template>` should be `tpl-fsLR`, since that is the only supported template. It contains the atlas file
+`*.dlabel.nii`, an additional `*.json` file, and a `*.tsv` file with label names, groups, and colors.
+As an example, here is the `tsv` file for the Brainnetome for preadolescents atlas:
+
+| index | label | cifti_label | color_red | color_green | color_blue | opacity |
+|-------|--------|-------------|-----------|-------------|-----------|---------|
+| 1 | SFG_L_6_1 | SFG_L_6_1 | 0 | 255 | 0 | 255 |
+| 2 | SFG_R_6_1 | SFG_R_6_1 | 0 | 0 | 255 | 255 |
+| 3 | SFG_L_6_2 | SFG_L_6_2 | 255 | 0 | 0 | 255 |
+| 4 | SFG_R_6_2 | SFG_R_6_2 | 0 | 246 | 255 | 255 |
+| ... | ... | ... | ... | ... | ... | ... |
+
+The `*.dlabel.nii` file should be aligned with `space-fsLR_den-32k` and **contain subcortical structures** aligned with the
+`MNI152NLin6Asym` template. To create your atlas in the correct space, we recommend using the [Connectome Workbench toolbox](https://www.humanconnectome.org/software/connectome-workbench).
+
+## **Use your custom atlas in `sf-pediatric`**
+
+In order for `sf-pediatric` to find your custom atlas, you need to specify which folder contains your custom atlas. This can be
+done using the `--atlas_folder` and the `--atlas_name` parameters. In practice, `sf-pediatric` will look for your atlas at this
+location: `${atlas_folder}/${atlas_name}`.
+
+:::caution[If the pipeline can't find your folder]
+If `sf-pediatric` can't find your atlas folder, it will return an error message similar to this:
+```
+ERROR ~ No such file or directory: /path/to/your/atlas
+```
+In this case, verify that the resolved path matches the location of your atlas.
+:::
+
+In addition to those two parameters, you can also provide the cortical/subcortical indexes for your atlas (`--cortical_rois`
+or `--subcortical_rois`). This will customize your QC report to properly visualize the segmentation structures. **It is highly
+recommended that you provide those indexes to get the most out of the QC report**.
+
+### **Example command-line**
+
+Taking the basic example described in the [a simple example section](/sf-pediatric/guides/usage/#a-simple-example). Specifying
+a custom atlas would look like this:
+
+<Tabs>
+<TabItem label="Command">
+```bash
+nextflow run scilus/sf-pediatric -r 0.2.2 \
+   --input /absolute/path/to/your/BIDS_directory \
+   --outdir /absolute/path/to/results \
+   --atlas_folder /absolute/path/to/folder \
+   --atlas_name BrainnetomeChild \
+   --cortical_rois "1:188,225:227" \
+   --subcortical_rois "189:224" \
+   -profile docker,tracking \
+   -resume
+```
+</TabItem>
+</Tabs>
+
+:::note
+This example uses the default atlas, but you can replace the atlas-specific arguments with values for your own atlas. For more
+information on the available parameters, see [this section](/sf-pediatric/guides/parameters/#atlases-options).
+:::
+
+## **References**
+
+<sup>1</sup> Li, W., Fan, L., Shi, W., Lu, Y., Li, J., Luo, N., Wang, H., Chu, C., Ma, L., Song, M., Li, K., Cheng, L.,
+Cao, L., & Jiang, T. (2023). Brainnetome atlas of preadolescent children based on anatomical connectivity profiles.
+<i>Cerebral Cortex</i>, 33(9), 5264–5275. https://doi.org/10.1093/cercor/bhac415

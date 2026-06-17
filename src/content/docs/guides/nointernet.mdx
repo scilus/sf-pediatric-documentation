@@ -7,7 +7,7 @@ import { Steps } from '@astrojs/starlight/components';
 import CommandOutputs from '../../../components/CommandOutputs.astro';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 
-Some computing nodes do not have access to the internet at runtime. Since the pipeline interacts with the container repository and containers are pulled during execution, you will get errors if the compute nodes do not have access to the internet. Fortunately, containers can be downloaded prior to pipeline execution and fetched locally during runtime. To facilitate usage in this specific use case, we provide a download script that handles all container downloads that will be required at runtime.
+Some computing nodes do not have access to the internet at runtime. Since the pipeline interacts with the container repository and containers are pulled during execution, you will get errors if the computing nodes do not have access to the internet. Fortunately, containers can be downloaded prior to the pipeline execution, and fetched locally during runtime. To facilitate usage in this specific use case, we provide a download script that handles all container downloads that will be required at runtime.
 
 ### **Downloading the containers**
 
