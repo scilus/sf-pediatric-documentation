@@ -55,6 +55,7 @@ export default defineConfig({
 						{ label: "Understanding the profiles", slug: 'guides/profiles' },
 						{ label: 'Basic usage', slug: 'guides/usage' },
 						{ label: 'Advanced usage', slug: 'guides/advanced' },
+						{ label: 'Using custom atlases', slug: 'guides/atlases' },
 						{ label: "Parameters", slug: 'guides/parameters' },
 						{ label: 'Outputs', slug: 'guides/outputs' },
 						{ label: 'Understanding the QC reports', slug: 'guides/qc' },

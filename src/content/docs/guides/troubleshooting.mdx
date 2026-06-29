@@ -145,6 +145,37 @@ Get a free license from [here](https://surfer.nmr.mgh.harvard.edu/registration.h
 --fs_license /path/to/license.txt
 ```
 
+### **Failed to fetch templates**
+
+**Error message:**
+
+```
+==========================================================
+ERROR: Failed to fetch templates from:
+    ${params.templates_url}
+
+${e.message}
+
+This typically means the compute node has no internet access.
+To resolve this, either:
+    1. Run the pipeline once from a node with internet
+        (templates will be cached for future runs)
+    2. Manually download and extract the archive:
+        curl -fSL ${params.templates_url} -o templates.tar.gz
+        tar -xzf templates.tar.gz -C ${params.templates_download_path}
+    3. Ask your sysadmin to place templates at:
+        ${params.templates_download_path}
+==========================================================
+```
+
+**Cause:** The pipeline attempted to download and fetch the template from your cache folder but did not succeed.
+
+**Solutions:**
+- If you have access to the internet, validate that the displayed `${params.templates_download_path}` truly exists and you have write access.
+If you do not have write access, you can change the `${params.templates_download_path}` to a different location where you have write access.
+- If you do not have access to the internet, refer to step #3 in [this section](/sf-pediatric/guides/nointernet/#downloading-the-containers)
+for a guide on how to manually download the template to cache.
+
 ### **Permission denied errors**
 
 **Error message:**
@@ -158,6 +189,20 @@ ERROR ~ Permission denied: '/path/to/output/sub-01/...'
 - Check you have write permissions to the `--outdir` location
 - Ensure the output directory is not owned by a different user
 - On shared systems, verify the directory is not read-only
+
+### **My subcortical structures look weird in my MultiQC report**
+
+If your subcortical segmentation look similar to this in your MultiQC report:
+
+![wrong_subcortical_visualization](../../../assets/QC/failed_subcortical_qc.png)
+
+**Cause:** It is likely that the specified ROIs for the subcortical regions are not correct.
+
+**Solutions:**
+- Validate that the specified ROIs for the subcortical regions using [`--subcortical_rois`](/sf-pediatric/guides/parameters/#atlases-options)
+are correct and relaunch the pipeline with `-resume`.
+- Alternatively, directly open the `*dseg.nii.gz` file found in your output folder using a visualization tool. If your segmentation do
+not look as expected, then something might have went wrong in the registration process.
 
 ## **Still having issues?**
 

@@ -52,25 +52,33 @@
 	padding-left: 0;
 }
 
-/* Prevent Type column from wrapping in parameter tables */
+.sl-markdown-content table details {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 0.25rem;
+}
+
+.sl-markdown-content table summary {
+    cursor: pointer;
+    outline: none;
+}
+
+.sl-markdown-content table {
+  display: table;
+  width: 100%;
+  table-layout: auto;
+}
+
+.sl-markdown-content table td {
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+.sl-markdown-content table th,
+.sl-markdown-content table td:first-child,
 .sl-markdown-content table td:nth-child(3),
-.sl-markdown-content table th:nth-child(3) {
-	white-space: nowrap;
-}
-
-/* Prevent Parameter column from wrapping in parameter tables */
-.sl-markdown-content table td:nth-child(1),
-.sl-markdown-content table th:nth-child(1) {
-	white-space: nowrap;
-}
-
-/* Hide the Hidden column (6th column) in parameter tables */
-.sl-markdown-content table td:nth-child(6),
-.sl-markdown-content table th:nth-child(6) {
-	display: none;
-}
-
-/* Hide rows where the Hidden column value is "True" */
-.sl-markdown-content table tbody tr.hidden-param {
-	display: none;
+.sl-markdown-content table td:nth-child(5),
+.sl-markdown-content table td:nth-child(6) {
+  white-space: nowrap;
 }
