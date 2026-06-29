@@ -115,6 +115,26 @@ Some computing nodes do not have access to the internet at runtime. Since the pi
 
     To modify any of those options, simply replace the current values in the command above with your desired value and run the script!
     ::: 
+
+3. **Download the templates**
+
+   **If you are planning to submit your main orchestrator job (the session that will dispatch the different processes)**,
+   you also need to predownload the templates used by `sf-pediatric`. If you plan on running the pipeline within a `tmux` session
+   on a login node, this is not required, the pipeline will be able to download the templates automatically. To do so manually,
+   please run the following commands:
+
+   <Tabs>
+   <TabItem label="Command">
+   ```
+   mkdir -p $HOME/.cache/sf-pediatric
+   curl -fSL https://osf.io/Kd8h7/download -o templates.tar.gz
+   tar -xzf templates.tar.gz -C $HOME/.cache/sf-pediatric
+   rm templates.tar.gz
+   ```
+   </TabItem>
+   </Tabs>
+
+   When you will launch the pipeline, it will automatically look in `$HOME/.cache/sf-pediatric` for the required templates.
 </Steps>
 
 ### **Running sf-pediatric using the SLURM executor**

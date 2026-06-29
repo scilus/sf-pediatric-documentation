@@ -29,7 +29,7 @@ example, the atlas folder should be structured as follows:
 
 The top-level `atlas-BrainnetomeChild_description.json` contains information on how the atlas was derived, related references,
 BIDS version, and other metadata. More information can be found [here](https://bids-specification.readthedocs.io/en/stable/derivatives/atlas.html#atlas-identification-and-metadata).
-The subdirectory `tpl-<template>` should be `tpl-fsLR`, since that is the only supported template. It contains the atlas file
+The subdirectory `tpl-<template>` should be `tpl-fsLR`, since that is the only currently supported template. It contains the atlas file
 `*.dlabel.nii`, an additional `*.json` file, and a `*.tsv` file with label names, groups, and colors.
 As an example, here is the `tsv` file for the Brainnetome for preadolescents atlas:
 
@@ -43,11 +43,13 @@ As an example, here is the `tsv` file for the Brainnetome for preadolescents atl
 
 The `*.dlabel.nii` file should be aligned with `space-fsLR_den-32k` and **contain subcortical structures** aligned with the
 `MNI152NLin6Asym` template. To create your atlas in the correct space, we recommend using the [Connectome Workbench toolbox](https://www.humanconnectome.org/software/connectome-workbench).
+A few already available atlases can be found in the [TemplateFlow archive](https://www.templateflow.org) (be sure that it
+contains subcortical structures!).
 
 ## **Use your custom atlas in `sf-pediatric`**
 
 In order for `sf-pediatric` to find your custom atlas, you need to specify which folder contains your custom atlas. This can be
-done using the `--atlas_folder` and the `--atlas_name` parameters. In practice, `sf-pediatric` will look for your atlas at this
+done using the [`--atlas_folder`](/sf-pediatric/guides/parameters#atlases-options) and the [`--atlas_name`](/sf-pediatric/guides/parameters#atlases-options) parameters. By default, `sf-pediatric` will look for your atlas at this
 location: `${atlas_folder}/${atlas_name}`.
 
 :::caution[If the pipeline can't find your folder]
@@ -55,11 +57,11 @@ If `sf-pediatric` can't find your atlas folder, it will return an error message 
 ```
 ERROR ~ No such file or directory: /path/to/your/atlas
 ```
-In this case, verify that the resolved path matches the location of your atlas.
+In this case, verify that the resolved path matches the location of your atlas and that the naming convention described above is respected.
 :::
 
-In addition to those two parameters, you can also provide the cortical/subcortical indexes for your atlas (`--cortical_rois`
-or `--subcortical_rois`). This will customize your QC report to properly visualize the segmentation structures. **It is highly
+In addition to those two parameters, you **should also provide the subcortical indexes** for your atlas using [`--subcortical_rois`](/sf-pediatric/guides/parameters#atlases-options).
+This will customize your QC report to properly visualize the segmentation subcortical structures. **It is highly
 recommended that you provide those indexes to get the most out of the QC report**.
 
 ### **Example command-line**
@@ -75,7 +77,6 @@ nextflow run scilus/sf-pediatric -r 0.2.2 \
    --outdir /absolute/path/to/results \
    --atlas_folder /absolute/path/to/folder \
    --atlas_name BrainnetomeChild \
-   --cortical_rois "1:188,225:227" \
    --subcortical_rois "189:224" \
    -profile docker,tracking \
    -resume
@@ -84,8 +85,16 @@ nextflow run scilus/sf-pediatric -r 0.2.2 \
 </Tabs>
 
 :::note
-This example uses the default atlas, but you can replace the atlas-specific arguments with values for your own atlas. For more
+This example uses the default atlas, but you can replace the atlas-specific arguments ([`--atlas_folder`](/sf-pediatric/guides/parameters#atlases-options),
+[`--atlas_name`](/sf-pediatric/guides/parameters#atlases-options), and [`--subcortical_rois`](/sf-pediatric/guides/parameters#atlases-options)) with values for your own atlas. For more
 information on the available parameters, see [this section](/sf-pediatric/guides/parameters/#atlases-options).
+:::
+
+:::caution[Using multiple different atlases]
+To perform connectome analyses using different atlases, we recommend doing sequential pipeline run with the different atlases
+specified using [`--atlas_name`](/sf-pediatric/guides/parameters#atlases-options) as we do not currently iterate over multiple atlas names.
+Using the `-resume` option, the pipeline will reuse previously cache processes to perform the segmentation with the new atlas.
+**Don't forget to change [`--subcortical_rois`](/sf-pediatric/guides/parameters#atlases-options) when you change your atlas!**
 :::
 
 ## **References**

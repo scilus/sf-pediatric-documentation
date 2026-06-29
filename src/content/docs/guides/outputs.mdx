@@ -80,10 +80,10 @@ The root output directory contains population-level files located alongside subj
 - `participants.tsv`: Table containing subject and session information.
 - `bundles_mean_stats.tsv`: Population-level bundle statistics (mean values across bundles).
 - `bundles_point_stats.tsv`: Population-level bundle statistics (point-wise metrics).
-- `cortical_{atlas}_area_{lh,rh}.tsv`: Population-level cortical surface area statistics per hemisphere.
-- `cortical_{atlas}_thickness_{lh,rh}.tsv`: Population-level cortical thickness statistics per hemisphere.
-- `cortical_{atlas}_volume_{lh,rh}.tsv`: Population-level cortical volume statistics per hemisphere.
-- `{atlas}_subcortical_volumes.tsv`: Population-level subcortical volume statistics.
+- `{atlas}_area_{lh,rh}_stats.tsv`: Population-level cortical surface area statistics per hemisphere.
+- `{atlas}_thickness_{lh,rh}_stats.tsv`: Population-level cortical thickness statistics per hemisphere.
+- `{atlas}_volume_{lh,rh}_stats.tsv`: Population-level cortical volume statistics per hemisphere.
+- `{atlas}_volume_subcortical_stats.tsv`: Population-level subcortical volume statistics.
 - `multiqc/`: Folder containing population-wide MultiQC report. For 
 
 </details>
@@ -122,10 +122,8 @@ The `anat/` folder contains all anatomical preprocessing outputs, tissue segment
 
 #### Parcellation and segmentation
 
-- `*_seg-{atlas}_desc-labels_dseg.json`: JSON file containing atlas label information.
-- `*_seg-{atlas}_desc-labels_dseg.txt`: Text file containing atlas label information.
+- `*_seg-{atlas}_dseg.tsv`: TSV file containing atlas label information.
 - `*_seg-{atlas}_dseg.nii.gz`: Atlas parcellation in native anatomical space.
-- `*_seg-{atlas}_desc-dilated_dseg.nii.gz`: Dilated atlas parcellation in native anatomical space.
 - `*_space-DWI_seg-{atlas}_dseg.nii.gz`: Atlas parcellation in diffusion space.
 - `*_space-{template}_seg-{atlas}_dseg.nii.gz`: Atlas parcellation in template space.
 
