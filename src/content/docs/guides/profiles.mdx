@@ -89,6 +89,8 @@ Choose one of these to specify how the pipeline runs:
 4. ### **`slurm`**
     Uses SLURM job scheduler on HPC clusters. Combine with apptainer: `-profile apptainer,slurm,tracking`. More details on how to launch the pipeline on HPC using SLURM can be [found here](/sf-pediatric/guides/nointernet#running-sf-pediatric-using-the-slurm-executor).
 
+5. ### **`gpu`**
+    When GPU(s) are available, use this profile to speed up the `eddy` and `tracking` processes. It is also compatible with SLURM-based HPC environments (you might need to specify the available GPU type using [`--gpu_type`](/sf-pediatric/guides/parameters#inputoutput-options)).
 </Steps>
 
 ---
@@ -102,6 +104,8 @@ Choose one of these to specify how the pipeline runs:
 | **Bundle analysis** | `-profile docker,tracking,bundling` | Tract-specific measures |
 | **Everything** | `-profile docker,tracking,segmentation,bundling,connectomics` | All analyses |
 | **On HPC cluster** | `-profile apptainer,slurm,...` | Use apptainer instead of docker on a SLURM cluster |
+| **Tractography with GPU** | `-profile docker,tracking,gpu` | Will leverage the available GPU to speed up tracking and eddy |
+| **HPC cluster with GPUs** | `-profile apptainer,slurm,gpu,...` | Will ask for GPUs via the SLURM scheduler |
 
 ---
 
