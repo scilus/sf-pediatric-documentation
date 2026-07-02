@@ -181,19 +181,31 @@ Some computing nodes do not have access to the internet at runtime. Since the pi
     </TabItem>
     </Tabs>
 
+    Create your `params.yml` file containing your parameters for this specific pipeline run (if not already done).
+
+    ```yaml title="params.yml"
+    input: <input_folder>   # Change this
+    outdir: <output_folder> # Change this
+    <...>
+    ```
+
     Finally, you can launch the pipeline (see the [Running the pipeline](/sf-pediatric/guides/usage) section for more details) using a simple call to nextflow:
 
     <Tabs>
     <TabItem label="Command">
     ```bash
     nextflow run scilus/sf-pediatric -r 0.3.0 \
-        --input <input_folder> \           # Change this.
-        --outdir <output_folder> \         # Change this.
+        -params-file params.yml \
         -profile ...,slurm,apptainer \     # Add any processing profiles you want to run.
         -resume
     ```
     </TabItem>
     </Tabs>
+
+    :::tip[Have access to a GPU?]
+    If you have access to GPUs, simply add `gpu` to your list of profiles (e.g., `-profile ...,slurm,apptainer,gpu`).
+    This will speed the pipeline execution by leveraging GPUs when possible. For more details, please see [this section](/sf-pediatric/guides/profiles/#gpu).
+    :::
 
     Alternatively, you can also add everything in a bash script, ensuring you are loading all the required modules and setting the required environment variables. Here's an example:
 
@@ -220,8 +232,7 @@ Some computing nodes do not have access to the internet at runtime. Since the pi
 
     # Call for the pipeline execution.
     nextflow run scilus/sf-pediatric -r 0.3.0 \
-        --input $input \
-        --outdir $output \
+        -params-file params.yml \
         -profile ...,apptainer,slurm \      # Add any processing profiles you want to run.
         -resume
     ```
@@ -269,8 +280,7 @@ export NXF_APPTAINER_CACHEDIR=<path/to/container_folder>    # Change this.
 
 # Call for the pipeline execution.
 nextflow run scilus/sf-pediatric -r 0.3.0 \
-    --input <path/to/input_folder> \    # Change this.
-    --outdir <path/to/output_folder> \  # Change this.
+    -params-file params.yml \           # Don't forget to create your params.yml file!
     -profile ...,apptainer,slurm \      # Add any processing profiles you want to run.
     -resume
 ```
@@ -286,6 +296,11 @@ sbatch cmd_sfpediatric_sbatch.sh
 ```
 </TabItem>
 </Tabs> 
+
+:::caution[Don't forget to create your `params.yml` file!]
+The previous examples assume you created a sidecar `params.yml` file containing all of your pipeline parameters. If
+not already done, please create one by following the instructions [in this section](/sf-pediatric/guides/usage/#how-to-use-a-paramsyml-file).
+:::
 
 ### **Downloading TemplateFlow templates**
 

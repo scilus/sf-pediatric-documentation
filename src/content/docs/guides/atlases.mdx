@@ -66,18 +66,22 @@ recommended that you provide those indexes to get the most out of the QC report*
 
 ### **Example command-line**
 
-Taking the basic example described in the [a simple example section](/sf-pediatric/guides/usage/#a-simple-example). Specifying
-a custom atlas would look like this:
+Taking the basic example described in the [a simple example section](/sf-pediatric/guides/usage/#a-simple-example), specifying
+a custom atlas through the `params.yml` file will look similar to this:
+
+```yaml title="params.yml"
+input: "/absolute/path/to/your/BIDS_directory"
+outdir: "absolute/path/to/results"
+atlas_folder: "/absolute/path/to/folder"
+atlas_name: "BrainnetomeChild"
+subcortical_rois: "189:224"
+```
 
 <Tabs>
 <TabItem label="Command">
 ```bash
 nextflow run scilus/sf-pediatric -r 0.3.0 \
-   --input /absolute/path/to/your/BIDS_directory \
-   --outdir /absolute/path/to/results \
-   --atlas_folder /absolute/path/to/folder \
-   --atlas_name BrainnetomeChild \
-   --subcortical_rois "189:224" \
+   -params-file params.yml \
    -profile docker,tracking \
    -resume
 ```

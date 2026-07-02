@@ -108,6 +108,19 @@ ERROR ~ Cannot connect to the Docker daemon
 - Wait a few seconds for Docker to fully start
 - If on an HPC cluster, use `-profile apptainer` instead of `-profile docker`
 
+### **Incorrect parameter type**
+
+**Error message:**
+
+```
+Value is [string] but should be [integer]
+```
+
+**Cause:** You specified your optional parameter through the command-line rather than via a `params.yml` file.
+
+**Solution:**
+Convert your CLI parameters into a `params.yml` file. To do so, follow the instructions on [how to use a `params.yml` file](/sf-pediatric/guides/usage/#how-to-use-a-paramsyml-file).
+
 ### **Incorrect shell selection**
 
 **Error message:**

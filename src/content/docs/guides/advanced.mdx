@@ -9,12 +9,12 @@ import { Steps } from '@astrojs/starlight/components';
 
 **When should I use a `params.yml` file to supply my parameters?**
 
-While you could always use a `params.yml` file to supply your custom parameters, it is mostly useful in two specific use-cases:
+**Always** use a `params.yml` file to supply your custom parameters. This is mostly for two reasons:
 
 <Steps>
 1. You want to select **more than a few subjects** using the [`--participant_label`](/sf-pediatric/guides/parameters/#inputoutput-options) parameter. 
 
-    Indeed, selecting more than 10 subjects can result in a long command-line call, which is prone to errors. Using the `params.file` can help making sure no errors are introduced, and also to keep track of which subjects have been processed.
+    Indeed, selecting more than 10 subjects can result in a long command-line call, which is prone to errors (and will not work in recent versions of the pipeline). Using the `params.yml` file can help making sure no errors are introduced, and also to keep track of which subjects have been processed.
 
 2. You are modifying a **lot of parameters** or you want to be sure you **save them** somewhere.
     
@@ -22,6 +22,8 @@ While you could always use a `params.yml` file to supply your custom parameters,
 </Steps>
 
 ### **How to use a `params.yml` file**
+
+This section will provide a brief reminder on how to use a `params.yml` file:
 
 <Steps>
 
