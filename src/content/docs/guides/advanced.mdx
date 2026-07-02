@@ -44,7 +44,7 @@ While you could always use a `params.yml` file to supply your custom parameters,
 2. Run the pipeline with the new `params.yml` file
 
     ```bash
-    nextflow run scilus/sf-pediatric -r 0.2.2 \
+    nextflow run scilus/sf-pediatric -r 0.3.0 \
     -profile docker,tracking \
     -params-file params.yaml \
     -resume
@@ -62,7 +62,7 @@ One of the great functionalities of `nextflow` is its **resumability**. This mea
 
 ```bash
 # The pipeline will resume from where it left off if it has already been run
-nextflow run scilus/sf-pediatric -r 0.2.2 \
+nextflow run scilus/sf-pediatric -r 0.3.0 \
    --input /path/to/BIDS \
    --outdir /path/to/results \
    -profile docker,tracking \
@@ -86,11 +86,11 @@ If you want to resume the pipeline from a specific run, you can specify this by 
 When possible, users should **always specify the pipeline version** with `-r`:
 
 ```bash
-nextflow run scilus/sf-pediatric -r 0.2.2 \
+nextflow run scilus/sf-pediatric -r 0.3.0 \
     <...>
 ```
 
-This ensures you're using a specific version (in this case, 0.2.2) instead of whatever happens to be latest. It will also be easier when reporting how you processed your data in a publication by simply referring to the pipeline's version. Find versions on the [releases page](https://github.com/scilus/sf-pediatric/releases).
+This ensures you're using a specific version (in this case, 0.3.0) instead of whatever happens to be latest. It will also be easier when reporting how you processed your data in a publication by simply referring to the pipeline's version. Find versions on the [releases page](https://github.com/scilus/sf-pediatric/releases).
 
 ## **Nextflow core arguments**
 

@@ -61,7 +61,7 @@ By default, the pipeline assumes two important things:
 <Tabs>
 <TabItem label="Command">
 ```bash
-nextflow run scilus/sf-pediatric -r 0.2.2 \
+nextflow run scilus/sf-pediatric -r 0.3.0 \
    --input /absolute/path/to/your/BIDS_directory \
    --outdir /absolute/path/to/results \
    -profile docker,tracking \
@@ -72,7 +72,7 @@ nextflow run scilus/sf-pediatric -r 0.2.2 \
 
 :::tip[What does this do?]
 This command will:
-- Download and run the pipeline version 0.2.2
+- Download and run the pipeline version 0.3.0
 - Process all subjects in your BIDS directory using the `tracking` profile
 - Save the results to your specified output directory
 - Use Docker containers
@@ -92,7 +92,7 @@ Every pipeline run needs **at least** these three parameters:
 
 2. **`--outdir`** - Where to save results
 
-   Results can be large (several GB per subject), so choose a location with sufficient space. We recommend naming the output directory with the version number (e.g., `--outdir /path/to/results/sf-pediatric-v0.2.2`)
+   Results can be large (several GB per subject), so choose a location with sufficient space. We recommend naming the output directory with the version number (e.g., `--outdir /path/to/results/sf-pediatric-v0.3.0`)
 
 3. **`-profile`** - Which profiles to run
 
@@ -135,7 +135,7 @@ If your data does not match the above-mentioned assumptions, you **MUST** specif
 
 ```bash
 # For HCP-like protocol (b-values: 1500 and 3000)
-nextflow run scilus/sf-pediatric -r 0.2.2 \
+nextflow run scilus/sf-pediatric -r 0.3.0 \
    --input /path/to/BIDS \
    --outdir /path/to/results \
    --dti_shells "0 1500" \
@@ -152,7 +152,7 @@ Sometimes, you might want to process only a subset of subjects from your complet
 
 ```bash
 # Process only sub-01 and sub-02
-nextflow run scilus/sf-pediatric -r 0.2.2 \
+nextflow run scilus/sf-pediatric -r 0.3.0 \
    --input /path/to/BIDS \
    --outdir /path/to/results \
    --participant_label "sub-01,sub-02" \
@@ -178,7 +178,7 @@ The pipeline will create the following structure in your current working directo
 
 <FileTree>
 - work/                           # Temporary files (can be deleted after successful run)
-- sf-pediatric-v0.2.2/            # Your results (specified by --outdir)
+- sf-pediatric-v0.3.0/            # Your results (specified by --outdir)
   - dataset_description.json
   - participants.tsv
   - multiqc/                      # Quality control reports
