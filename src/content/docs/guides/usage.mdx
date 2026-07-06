@@ -120,7 +120,7 @@ type. You can view an exhaustive list in the [parameters section](/sf-pediatric/
 
 ### **Specify alternative optional parameters**
 
-Since recent `nextflow` versions, all parameters should be supplied using a `params.yaml` file. This section will detail
+Since recent `nextflow` versions (&ge; `26.04.0`), all parameters should be supplied using a `params.yaml` file. This section will detail
 how to define and supply those parameters using this file format followed by a few common use cases.
 
 ### **How to use a `params.yml` file**
@@ -145,9 +145,9 @@ how to define and supply those parameters using this file format followed by a f
 
     ```bash
     nextflow run scilus/sf-pediatric -r 0.3.0 \
-    -profile docker,tracking \
-    -params-file params.yaml \
-    -resume
+      -profile docker,tracking \
+      -params-file params.yaml \
+      -resume
     ```
 
     This will launch the pipeline exactly as we did before, but we can now further customize our parameters supplied to
@@ -187,10 +187,10 @@ You can now launch the pipeline exactly as before:
 
 ```bash
 # For HCP-like protocol (b-values: 1500 and 3000)
-    nextflow run scilus/sf-pediatric -r 0.3.0 \
-    -profile docker,tracking \
-    -params-file params.yaml \
-    -resume
+nextflow run scilus/sf-pediatric -r 0.3.0 \
+   -profile docker,tracking \
+   -params-file params.yaml \
+   -resume
 ```
 
 For more details, see [`--dti_shells`](/sf-pediatric/guides/parameters/#dti-options) and [`--fodf_shells`](/sf-pediatric/guides/parameters/#fodf-options) parameters.
@@ -213,10 +213,10 @@ Then, launch the pipeline with the usual command as shown before:
 
 ```bash
 # Process only sub-01 and sub-02
-    nextflow run scilus/sf-pediatric -r 0.3.0 \
-    -profile docker,tracking \
-    -params-file params.yaml \
-    -resume
+nextflow run scilus/sf-pediatric -r 0.3.0 \
+   -profile docker,tracking \
+   -params-file params.yaml \
+   -resume
 ```
 
 :::tip[All modifiable parameters]
