@@ -61,7 +61,7 @@ By default, the pipeline assumes two important things:
 <Tabs>
 <TabItem label="Command">
 ```bash
-nextflow run scilus/sf-pediatric -r 0.2.2 \
+nextflow run scilus/sf-pediatric -r 0.3.0 \
    --input /absolute/path/to/your/BIDS_directory \
    --outdir /absolute/path/to/results \
    -profile docker,tracking \
@@ -72,7 +72,7 @@ nextflow run scilus/sf-pediatric -r 0.2.2 \
 
 :::tip[What does this do?]
 This command will:
-- Download and run the pipeline version 0.2.2
+- Download and run the pipeline version 0.3.0
 - Process all subjects in your BIDS directory using the `tracking` profile
 - Save the results to your specified output directory
 - Use Docker containers
@@ -92,7 +92,7 @@ Every pipeline run needs **at least** these three parameters:
 
 2. **`--outdir`** - Where to save results
 
-   Results can be large (several GB per subject), so choose a location with sufficient space. We recommend naming the output directory with the version number (e.g., `--outdir /path/to/results/sf-pediatric-v0.2.2`)
+   Results can be large (several GB per subject), so choose a location with sufficient space. We recommend naming the output directory with the version number (e.g., `--outdir /path/to/results/sf-pediatric-v0.3.0`)
 
 3. **`-profile`** - Which profiles to run
 
@@ -115,6 +115,47 @@ Every pipeline run needs **at least** these three parameters:
 
 ## **Important optional parameters**
 
+While most parameters are optional, it is highly recommended that you ensure they are appropriate for your data and analysis
+type. You can view an exhaustive list in the [parameters section](/sf-pediatric/guides/parameters).
+
+### **Specify alternative optional parameters**
+
+Since recent `nextflow` versions (&ge; `26.04.0`), all parameters should be supplied using a `params.yaml` file. This section will detail
+how to define and supply those parameters using this file format followed by a few common use cases.
+
+### **How to use a `params.yml` file**
+
+<Steps>
+
+1. Create a `params.yaml` file
+
+    To create your file, you can use any text editor you like. Using the `nano` text editor, simply call 
+    `nano params.yml` in the command-line. It will open up a text editor that you can fill up with your 
+    desired parameters. As an example, we will fill this file with the previous `input` and `outdir` parameters
+    that we previously supplied in the example above. Your resulting `params.yml` would look something like this:
+
+    ```yaml title="params.yml"
+    input: '/path/to/BIDS/'
+    outdir: '/path/to/results/'
+    ```
+
+    Once filled, **save your file** (for the `nano` text editor, use `Ctrl + O` to write your file then `Ctrl + X` to exit the text editor).
+
+2. Run the pipeline with the new `params.yml` file
+
+    ```bash
+    nextflow run scilus/sf-pediatric -r 0.3.0 \
+      -profile docker,tracking \
+      -params-file params.yaml \
+      -resume
+    ```
+
+    This will launch the pipeline exactly as we did before, but we can now further customize our parameters supplied to
+    `sf-pediatric`.
+</Steps>
+
+
+
 ### **Shell selection for DTI and fODF models**
 
 :::caution[Check your b-values!]
@@ -133,14 +174,22 @@ If your data does not match the above-mentioned assumptions, you **MUST** specif
 
 #### **How to specify shells:**
 
+Reusing our created `params.yml` file, we can simply add new lines to modify our shell selection for the DTI and fODF fitting.
+
+```yaml title="params.yml"
+input: '/path/to/BIDS/'
+outdir: '/path/to/results/'
+dti_shells: "0 1500"
+fodf_shells: "0 1500 3000"
+```
+
+You can now launch the pipeline exactly as before:
+
 ```bash
 # For HCP-like protocol (b-values: 1500 and 3000)
-nextflow run scilus/sf-pediatric -r 0.2.2 \
-   --input /path/to/BIDS \
-   --outdir /path/to/results \
-   --dti_shells "0 1500" \
-   --fodf_shells "0 1500 3000" \
+nextflow run scilus/sf-pediatric -r 0.3.0 \
    -profile docker,tracking \
+   -params-file params.yaml \
    -resume
 ```
 
@@ -148,24 +197,33 @@ For more details, see [`--dti_shells`](/sf-pediatric/guides/parameters/#dti-opti
 
 ### **Selecting specific subjects to process**
 
-Sometimes, you might want to process only a subset of subjects from your complete BIDS dataset. This is entirely possible using the [`--participant_label`](/sf-pediatric/guides/parameters/#inputoutput-options) parameter.
+Sometimes, you might want to process only a subset of subjects from your complete BIDS dataset. This is
+entirely possible using the [`--participant_label`](/sf-pediatric/guides/parameters/#inputoutput-options) parameter.
+To select your subject of interest, simply fill the `params.yml` file with the subject ID you want to process:
+
+```yaml title="params.yml"
+input: '/path/to/BIDS/'
+outdir: '/path/to/results/'
+participant_label:
+   - sub-01
+   - sub-02
+```
+
+Then, launch the pipeline with the usual command as shown before:
 
 ```bash
 # Process only sub-01 and sub-02
-nextflow run scilus/sf-pediatric -r 0.2.2 \
-   --input /path/to/BIDS \
-   --outdir /path/to/results \
-   --participant_label "sub-01,sub-02" \
+nextflow run scilus/sf-pediatric -r 0.3.0 \
    -profile docker,tracking \
+   -params-file params.yaml \
    -resume
 ```
 
-:::tip[Selecting a large number of subjects]
-For multiple subjects or complex configurations, using an external `params.yml` file containing all CLI parameters is recommended (see the [advanced usage](/sf-pediatric/guides/advanced/) section for more information).
-:::
-
 :::tip[All modifiable parameters]
-While we only overviewed the most common parameters here, `sf-pediatric` can be customized even further through various additional parameters that can all be supplied through the command line (as shown above) or through an external `params.yml` file (see [advanced usage](/sf-pediatric/guides/advanced/)). The **complete list** of modifiable parameters can be found in the [parameters](/sf-pediatric/guides/parameters/) section.
+While we only overviewed the most common parameters here, `sf-pediatric` can be customized even further
+through various additional parameters that can all be supplied through an external `params.yml` file 
+(see [advanced usage](/sf-pediatric/guides/advanced/)). The **complete list** of modifiable parameters
+can be found in the [parameters](/sf-pediatric/guides/parameters/) section.
 :::
 
 ## **Understanding pipeline outputs**
@@ -178,7 +236,7 @@ The pipeline will create the following structure in your current working directo
 
 <FileTree>
 - work/                           # Temporary files (can be deleted after successful run)
-- sf-pediatric-v0.2.2/            # Your results (specified by --outdir)
+- sf-pediatric-v0.3.0/            # Your results (specified by --outdir)
   - dataset_description.json
   - participants.tsv
   - multiqc/                      # Quality control reports
