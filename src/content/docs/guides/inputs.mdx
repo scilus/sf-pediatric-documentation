@@ -34,6 +34,12 @@ The most basic BIDS directory should have a similar structure (note that session
         - sub-01_ses-01_epi.json
 </FileTree>
 
+:::note[`sf-pediatric` will log missing files at runtime]
+When reading your BIDS dataset, `sf-pediatric` will log information regarding which file it was able to find and which
+ones are missing in a `BIDS_logs.txt` file saved in your [`$params.outdir`](/sf-pediatric/guides/parameters/#inputoutput-options)`/pipeline_info/`. This is the best place to debug
+unexpected BIDS-related behavior when processing your dataset.
+:::
+
 ### **Required Files**
 
 - `dataset_description.json`: A JSON file describing the dataset.
@@ -65,3 +71,11 @@ In order for `sf-pediatric` to properly read the `participants.tsv` file, column
     - `T2w` is **mandatory** for participants < 3 months old (only for the segmentation profile, otherwise a T1w will also work).
   - `dwi/`: A directory containing diffusion-weighted imaging data (e.g., DWI, bval, bvec). Acquisition with both direction DWI data are also supported (e.g. AP/PA). Specify them according to the [BIDS guidelines](https://bids-specification.readthedocs.io/en/stable/modality-specific-files/magnetic-resonance-imaging-data.html)
   - `fmap/`: A directory containing field map data (optional but recommended for distortion correction).
+
+:::tip[Handling multiple runs]
+If your dataset contains multiple DWI runs, `sf-pediatric` will consider each of them as a separate DWI acquisition
+and will process them separately. The extracted `run-XX` tags will be carried over to the output folder, so each run will be
+properly identified. **However, if runs exist in the anatomical images, those will not be considered separate**, and the
+last one will be kept for processing. To override this behavior, you can use the `.bidsignore` file. For detailed instructions,
+please refer [to this section](/sf-pediatric/guides/advanced/#using-the-bidsignore-file-to-filter-a-bids-dataset).
+:::
