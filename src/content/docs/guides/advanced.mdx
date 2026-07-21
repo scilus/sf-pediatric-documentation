@@ -5,6 +5,30 @@ description: Advanced configurations and options
 
 import { Steps } from '@astrojs/starlight/components';
 
+## **Using the `.bidsignore` file to filter a BIDS dataset**
+
+**When should I use a `.bidsignore` file?**
+
+**When you want to hide specific files from `sf-pediatric`'s BIDS reader.** In case your dataset contains files that could
+be matched by the pipeline but that you do not want to process, you can specify specific patterns to exclude using a root-level
+`.bidsignore` file (this means at the same level as the `participants.tsv` file). This file should only contain regex patterns that should be excluded. Here's an example if you want to
+exclude the DWI run-02 from a specific subject (e.g., sub-01):
+
+```txt title=".bidsignore"
+# Excluding run-02 from subject sub-01 across all possible sessions
+sub-01/**/*run-02*
+```
+
+You can also use this file to exclude other files matching more global or complex patterns. For example, here's a `.bidsignore`
+file that excludes the localizers and spine DWI acquisitions:
+
+```txt title=".bidsignore"
+# Localizers
+**/anat/*localizer*
+# Spine DWI acquisitions
+*/*/*/*_bp-cspine*
+```
+
 ## **Using a `params.yml` file**
 
 **When should I use a `params.yml` file to supply my parameters?**
