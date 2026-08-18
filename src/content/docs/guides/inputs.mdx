@@ -46,14 +46,14 @@ unexpected BIDS-related behavior when processing your dataset.
 - `participants.tsv`: A TSV file listing the participants and their metadata. **`sf-pediatric` requires the participants' age to be supplied within this file, using `age` as the column name. If not available, the pipeline will return an error at runtime.**
 
 :::caution[Important!]
-The age can be specified using either **post conceptual age** (only recommended for infant data, for participants > 44 weeks post-conceptual age, users should supply age in years) or **years**. If multiple session are available for a single subject, each session needs to be entered in **different rows**.
+The age should be supplied in **years**. If multiple session are available for a single subject, each session needs to be entered in **different rows**.
 :::
 
 ### **`participants.tsv` example**
 
 | participant_id | session_id   | age |
 | -------------- | ------------ | --- |
-| sub-test1      | ses-baseline | 42  |
+| sub-test1      | ses-baseline | 0.08|
 | sub-test1      | ses-time1    | 4   |
 | sub-test2      |              | 8   |
 | ...            | ...          | ... |
