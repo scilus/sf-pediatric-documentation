@@ -1,0 +1,252 @@
+---
+title: Basic usage
+description: How to use sf-pediatric
+slug: 0.3.0/guides/usage
+---
+
+import CommandOutputs from '../../../../components/CommandOutputs.astro';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { FileTree } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+
+:::note[Don't hesitate to provide feedback!]
+This page describes the basic usage for sf-pediatric. If something is not clear for you, do not hesitate to open an issue on [sf-pediatric GitHub page](https://github.com/scilus/sf-pediatric.git).
+:::
+
+## **Checklist**
+
+Before running the pipeline, make sure you have completed the following:
+
+<Steps>
+  1. **Prerequisites installed?**
+
+     Verify that `nextflow` and either `docker` or `apptainer` are installed and working. See the [installation guide](/sf-pediatric/0.3.0/guides/installation) for detailed instructions.
+
+  2. **BIDS data validated?**
+
+     Your data must be organized in BIDS format with the `participants.tsv` file containing the **age** column. See the [inputs guide](/sf-pediatric/0.3.0/guides/inputs) for details.
+
+  3. **FreeSurfer license available?**
+
+     :::caution
+     If you plan to use the **segmentation profile**, you **must** have a valid FreeSurfer license. Get one [here](https://surfer.nmr.mgh.harvard.edu/registration.html) (free for academic use). You'll specify the path with `--fs_license /path/to/license.txt`
+     :::
+
+  4. **Know which analysis you want to run?**
+
+     Decide which profiles you need based on your research goals. See the [Understanding the profiles](/sf-pediatric/0.3.0/guides/profiles) guide.
+
+  5. **Will you have access to the internet during processing?**
+
+     Internet access is not required to run the pipeline. However, by default, the pipeline will download some dependencies during execution. If you plan on running it on a machine without internet access (e.g., an HPC cluster), head over to the [running with no internet access](/sf-pediatric/0.3.0/guides/nointernet/) section.
+</Steps>
+
+## **A simple example**
+
+If you're new to the pipeline, start with this basic command for diffusion MRI preprocessing and tractography:
+
+:::note[Assumptions]
+By default, the pipeline assumes two important things:
+
+<Steps>
+  1. **B-values ≤ 1200 s/mm²** for DTI fitting.
+
+  2. **B-values ≥ 700 s/mm²** for fODF fitting.
+</Steps>
+
+**If your acquisition protocol does not fit those assumptions**, you can change the pipeline behavior. For more information, see [this section](/sf-pediatric/0.3.0/guides/usage/#shell-selection-for-dti-and-fodf-models).
+:::
+
+<Tabs>
+  <TabItem label="Command">
+    ```bash
+    nextflow run scilus/sf-pediatric -r 0.3.0 \
+       --input /absolute/path/to/your/BIDS_directory \
+       --outdir /absolute/path/to/results \
+       -profile docker,tracking \
+       -resume
+    ```
+  </TabItem>
+</Tabs>
+
+:::tip[What does this do?]
+This command will:
+
+* Download and run the pipeline version 0.3.0
+* Process all subjects in your BIDS directory using the `tracking` profile
+* Save the results to your specified output directory
+* Use Docker containers
+:::
+
+:::tip[Need help choosing profiles?]
+If you're unsure which profiles to use, check out the [understanding the profiles](/sf-pediatric/0.3.0/guides/profiles) guide for detailed explanations and common recipes.
+:::
+
+## **Required parameters**
+
+Every pipeline run needs **at least** these three parameters:
+
+<Steps>
+  1. **`--input`** - Path to your BIDS directory
+
+     Your data must follow [BIDS format](/sf-pediatric/0.3.0/guides/inputs) with a `participants.tsv` file containing an `age` column.
+
+  2. **`--outdir`** - Where to save results
+
+     Results can be large (several GB per subject), so choose a location with sufficient space. We recommend naming the output directory with the version number (e.g., `--outdir /path/to/results/sf-pediatric-v0.3.0`)
+
+  3. **`-profile`** - Which profiles to run
+
+     ```bash
+     # Always include a container system (docker/apptainer) + processing profiles
+     -profile docker,tracking
+     -profile apptainer,tracking,segmentation,connectomics
+     ```
+
+     See the [profiles guide](/sf-pediatric/0.3.0/guides/profiles) for detailed information on choosing profiles.
+
+     :::tip[Want to speed up your processing using a GPU?]
+     `sf-pediatric` supports using GPUs to speed the `eddy` and `tracking` processes. If you have access to a GPU, you can add the `-profile gpu,...` to your command line. For more information, please see the [understanding the profiles](/sf-pediatric/0.3.0/guides/profiles) section.
+     :::
+</Steps>
+
+:::note[Using a custom atlas]
+`sf-pediatric` supports the use of user-defined custom atlases, for more information, please see the [Using a custom atlas section](/sf-pediatric/0.3.0/guides/atlases/).
+:::
+
+## **Important optional parameters**
+
+While most parameters are optional, it is highly recommended that you ensure they are appropriate for your data and analysis
+type. You can view an exhaustive list in the [parameters section](/sf-pediatric/0.3.0/guides/parameters).
+
+### **Specify alternative optional parameters**
+
+Since recent `nextflow` versions (≥ `26.04.0`), all parameters should be supplied using a `params.yaml` file. This section will detail
+how to define and supply those parameters using this file format followed by a few common use cases.
+
+### **How to use a `params.yml` file**
+
+<Steps>
+  1. Create a `params.yaml` file
+
+     To create your file, you can use any text editor you like. Using the `nano` text editor, simply call
+     `nano params.yml` in the command-line. It will open up a text editor that you can fill up with your
+     desired parameters. As an example, we will fill this file with the previous `input` and `outdir` parameters
+     that we previously supplied in the example above. Your resulting `params.yml` would look something like this:
+
+     ```yaml title="params.yml"
+     input: '/path/to/BIDS/'
+     outdir: '/path/to/results/'
+     ```
+
+     Once filled, **save your file** (for the `nano` text editor, use `Ctrl + O` to write your file then `Ctrl + X` to exit the text editor).
+
+  2. Run the pipeline with the new `params.yml` file
+
+     ```bash
+     nextflow run scilus/sf-pediatric -r 0.3.0 \
+       -profile docker,tracking \
+       -params-file params.yaml \
+       -resume
+     ```
+
+     This will launch the pipeline exactly as we did before, but we can now further customize our parameters supplied to
+     `sf-pediatric`.
+</Steps>
+
+### **Shell selection for DTI and fODF models**
+
+:::caution[Check your b-values!]
+As mentioned above, the pipeline assumes by default:
+
+<Steps>
+  1. **B-values ≤ 1200 s/mm²** for DTI fitting.
+
+  2. **B-values ≥ 700 s/mm²** for fODF fitting.
+</Steps>
+
+**Does your data have different b-values?** (e.g., HCP protocol with b-values of 1500 and 3000 s/mm²)
+
+If your data does not match the above-mentioned assumptions, you **MUST** specify which shells to use, or the pipeline will likely fail. Follow the instructions below.
+:::
+
+#### **How to specify shells:**
+
+Reusing our created `params.yml` file, we can simply add new lines to modify our shell selection for the DTI and fODF fitting.
+
+```yaml title="params.yml"
+input: '/path/to/BIDS/'
+outdir: '/path/to/results/'
+dti_shells: "0 1500"
+fodf_shells: "0 1500 3000"
+```
+
+You can now launch the pipeline exactly as before:
+
+```bash
+# For HCP-like protocol (b-values: 1500 and 3000)
+nextflow run scilus/sf-pediatric -r 0.3.0 \
+   -profile docker,tracking \
+   -params-file params.yaml \
+   -resume
+```
+
+For more details, see [`--dti_shells`](/sf-pediatric/0.3.0/guides/parameters/#dti-options) and [`--fodf_shells`](/sf-pediatric/0.3.0/guides/parameters/#fodf-options) parameters.
+
+### **Selecting specific subjects to process**
+
+Sometimes, you might want to process only a subset of subjects from your complete BIDS dataset. This is
+entirely possible using the [`--participant_label`](/sf-pediatric/0.3.0/guides/parameters/#inputoutput-options) parameter.
+To select your subject of interest, simply fill the `params.yml` file with the subject ID you want to process:
+
+```yaml title="params.yml"
+input: '/path/to/BIDS/'
+outdir: '/path/to/results/'
+participant_label:
+   - sub-01
+   - sub-02
+```
+
+Then, launch the pipeline with the usual command as shown before:
+
+```bash
+# Process only sub-01 and sub-02
+nextflow run scilus/sf-pediatric -r 0.3.0 \
+   -profile docker,tracking \
+   -params-file params.yaml \
+   -resume
+```
+
+:::tip[All modifiable parameters]
+While we only overviewed the most common parameters here, `sf-pediatric` can be customized even further
+through various additional parameters that can all be supplied through an external `params.yml` file
+(see [advanced usage](/sf-pediatric/0.3.0/guides/advanced/)). The **complete list** of modifiable parameters
+can be found in the [parameters](/sf-pediatric/0.3.0/guides/parameters/) section.
+:::
+
+## **Understanding pipeline outputs**
+
+:::tip[Something went wrong?]
+If for some reason, the pipeline's execution stopped early, or do not start, head over to the [troubleshooting](/sf-pediatric/0.3.0/guides/troubleshooting/) page!
+:::
+
+The pipeline will create the following structure in your current working directory (assuming your `--outdir` is located in this directory):
+
+<FileTree>
+  * work/                           # Temporary files (can be deleted after successful run)
+  * sf-pediatric-v0.3.0/            # Your results (specified by --outdir)
+    * dataset\_description.json
+    * participants.tsv
+    * multiqc/                      # Quality control reports
+    * sub-01/
+      * ses-01/
+        * anat/                     # Anatomical images (T1w/T2w processing)
+        * dwi/                      # Diffusion images and tractography
+        * figures/                  # QC visualizations
+        * multiqc/                  # Subject-specific QC
+        * xfm/                      # Image transformations
+  * .nextflow.log                   # Log file (check this if errors occur)
+  * .nextflow/                      # Nextflow cache (enables -resume)
+</FileTree>
+
+For a detailed description of each output file, see the [outputs guide](/sf-pediatric/0.3.0/guides/outputs).
