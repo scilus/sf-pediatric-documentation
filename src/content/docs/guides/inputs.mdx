@@ -46,14 +46,14 @@ unexpected BIDS-related behavior when processing your dataset.
 - `participants.tsv`: A TSV file listing the participants and their metadata. **`sf-pediatric` requires the participants' age to be supplied within this file, using `age` as the column name. If not available, the pipeline will return an error at runtime.**
 
 :::caution[Important!]
-The age can be specified using either **post conceptual age** (only recommended for infant data, for participants > 44 weeks post-conceptual age, users should supply age in years) or **years**. If multiple session are available for a single subject, each session needs to be entered in **different rows**.
+The age should be supplied in **years**. If multiple session are available for a single subject, each session needs to be entered in **different rows**.
 :::
 
 ### **`participants.tsv` example**
 
 | participant_id | session_id   | age |
 | -------------- | ------------ | --- |
-| sub-test1      | ses-baseline | 42  |
+| sub-test1      | ses-baseline | 0.08|
 | sub-test1      | ses-time1    | 4   |
 | sub-test2      |              | 8   |
 | ...            | ...          | ... |
@@ -67,8 +67,6 @@ In order for `sf-pediatric` to properly read the `participants.tsv` file, column
 
 - `sub-<participant_id>/`: A directory for each participant containing their data.
   - `anat/`: A directory containing anatomical MRI data (e.g., T1w, T2w). If both are available, the optimal one will be selected and both will be coregistered.
-    - `T1w` is **mandatory** for participants >= 3 months old.
-    - `T2w` is **mandatory** for participants < 3 months old (only for the segmentation profile, otherwise a T1w will also work).
   - `dwi/`: A directory containing diffusion-weighted imaging data (e.g., DWI, bval, bvec). Acquisition with both direction DWI data are also supported (e.g. AP/PA). Specify them according to the [BIDS guidelines](https://bids-specification.readthedocs.io/en/stable/modality-specific-files/magnetic-resonance-imaging-data.html)
   - `fmap/`: A directory containing field map data (optional but recommended for distortion correction).
 
