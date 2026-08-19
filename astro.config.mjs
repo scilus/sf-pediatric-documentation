@@ -20,6 +20,7 @@ export default defineConfig({
 						{ slug: '0.2.0', label: 'v0.2.0' },
 						{ slug: '0.2.1', label: 'v0.2.1' },
 						{ slug: '0.2.2', label: 'v0.2.2' },
+						{ slug: '0.3.0', label: 'v0.3.0' },
 					],
 				}),
 			],

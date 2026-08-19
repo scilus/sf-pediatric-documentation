@@ -5,35 +5,33 @@ description: sf-pediatric parameters
 
 ### **Input/output options**
 
-This section will detail how to set the inputs and outputs of the pipeline.
+Define where the pipeline should find input data and save output data.
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
 | `input` | Path to the BIDS directory location. <details><summary>Help</summary><small>Ensure the BIDS data structure is respected. For more information, see the [documentation](https://scilus.github.io/sf-pediatric/guides/inputs/)</small></details>| `string` |  |  |  |
-| `participant_label` | List of participant IDs or a single participant ID. <details><summary>Help</summary><small>This will be used to select the specific participants to process. The best way to provide them is in a params.yml file, see the [documentation](https://scilus.github.io/sf-pediatric/guides/usage/#using-the-paramsyml-file) for more information.</small></details>| `array` |  |  |  |
+| `participant_label` | List of participant IDs or a single participant ID. <details><summary>Help</summary><small>This will be used to select the specific participants to process. The best way to provide them is in a params.yml file, see the [documentation](https://scilus.github.io/sf-pediatric/guides/usage/#using-the-paramsyml-file) for more information.</small></details>| `['array', 'string']` |  |  |  |
 | `input_deriv` | Path to the derivatives directory to use as input. | `string` |  |  |  |
-| `bids_script` | Path to the BIDS script. <details><summary>Help</summary><small>This is a script that will be used to generate the BIDS directory structure from the raw data. Unless you know what you are doing, this should not be changed. Will be removed in a future release.</small></details>| `string` |  |  | True |
 | `outdir` | The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure. <details><summary>Help</summary><small>For a detailed description of the output files, please see the [documentation](https://scilus.github.io/sf-pediatric/guides/outputs/).</small></details>| `string` |  | True |  |
-| `email` | Email address for completion summary. <details><summary>Help</summary><small>Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.</small></details>| `string` |  |  |  |
-| `multiqc_title_subject` | MultiQC report title for subject report. Printed as page header, used for filename if not otherwise specified. | `string` |  |  |  |
-| `multiqc_title_global` | MultiQC report title for global report. Printed as page header, used for filename if not otherwise specified. | `string` |  |  |  |
+| `templates_url` | URL to download templates from. | `string` | https://osf.io/Kd8h7/download |  | True |
+| `templates_download_path` | Path to the directory where templates will be downloaded and cached. | `string` |  |  | True |
+| `gpu_type` | Type of GPU models (or MIG) to use when submitting GPU jobs to HPC clusters using `-profile slurm,gpu`. This should not be needed outside of HPC environments. | `string` |  |  | False |
+| `email` | Email address for completion summary. <details><summary>Help</summary><small>Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.</small></details>| `string` |  |  | True |
+| `multiqc_title_subject` | MultiQC report title for subject report. Printed as page header, used for filename if not otherwise specified. | `string` |  |  | True |
+| `multiqc_title_global` | MultiQC report title for global report. Printed as page header, used for filename if not otherwise specified. | `string` |  |  | True |
 
 ### **Segmentation Options**
 
-Options for FreeSurfer, FastSurfer, and/or M-CRIB-S processing. Only relevant if you select the segmentation profile.
+Options for FreeSurfer or FastSurfer processing. Only relevant if you select the segmentation profile.
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
-| `method` | Method to use to perform surface reconstruction and cortical/subcortical segmentation. Will only affect subjects > 3 months of age. Recon-all-clinical is highly recommended for subjects between 3 months and 5 years old. Options include recon-all, recon-all-clinical, or FastSurfer. (accepted: `recon-all-clinical`\|`recon-all`\|`fastsurfer`) | `string` | recon-all-clinical |  | False |
+| `method` | Method to use to perform surface reconstruction and cortical/subcortical segmentation. Will only affect subjects > 1 year of age. Recon-all-clinical is highly recommended for subjects between 1 year and 5 years old (and above). Options include recon-all, recon-all-clinical, or FastSurfer. (accepted: `recon-all-clinical`\|`recon-all`\|`fastsurfer`) | `string` | recon-all-clinical |  | False |
 | `fs_license` | Path to FreeSurfer license file. <details><summary>Help</summary><small>This is required to run the segmentation profile. You can obtain a FreeSurfer license from the [FreeSurfer website here](https://surfer.nmr.mgh.harvard.edu/registration.html).</small></details>| `string` |  |  |  |
 | `cerebnet` | Use CerebNet for cerebellum segmentation in FastSurfer. | `boolean` | False |  | True |
 | `hypvinn` | Use HypVINN for hypothalamus sub-segmentation in FastSurfer. | `boolean` | False |  | True |
 | `acq3T` | Use 3T acquisition parameters. | `boolean` | True |  | True |
-| `fs_output_dir` | Path to FreeSurfer/FastSurfer/M-CRIB-S output directory. <details><summary>Help</summary><small>Default location will be alongside `--outdir`. For more information, please see the [documentation](https://scilus.github.io/sf-pediatric/guides/outputs/)</small></details>| `string` |  |  | False |
-| `mcribs_jointhresh` | Join threshold used in the MCRIBS surface reconstruction step. | `number` |  |  | True |
-| `mcribs_fastcollision` | Use deformable fast collision test in the MCRIBS surface reconstruction step. | `boolean` | False |  | True |
-| `mcribs_nopialoutside` | Do not ensure pial is outside of WM in the MCRIBS surface reconstruction step. | `boolean` | False |  | True |
-| `mcribs_seed` | Seed used in the MCRIBS surface reconstruction step. | `number` | 1234 |  | True |
+| `fs_output_dir` | Path to FreeSurfer/FastSurfer output directory. <details><summary>Help</summary><small>Default location will be alongside `--outdir`. For more information, please see the [documentation](https://scilus.github.io/sf-pediatric/guides/outputs/)</small></details>| `string` |  |  | False |
 
 ### **Atlases Options**
 
@@ -41,21 +39,9 @@ Options for atlases used in the pipeline.
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
-| `utils_folder` | Path to the utils folder. <details><summary>Help</summary><small>This folder contains the atlases used in the pipeline. Unless you know what you are doing, please do not change this.</small></details>| `string` |  |  | True |
-
-### **Processing steps to apply on anatomical images.**
-
-Processing steps to apply on anatomical images. (NOTE: the same steps will be applied on both T1w/T2w if both are available).
-
-| Parameter | Description | Type | Default | Required | Hidden |
-|-----------|-----------|-----------|-----------|-----------|-----------|
-| `preproc_run_denoising` | Run denoising on the anatomical images. | `boolean` | True |  | False |
-| `preproc_run_N4` | Run N4 bias correction on the anatomical images. | `boolean` | True |  | False |
-| `preproc_run_resampling` | Run resampling on the anatomical images. | `boolean` | True |  | False |
-| `preproc_run_synthstrip` | Run SynthStrip for brain extraction. | `boolean` | True |  | False |
-| `preproc_run_ants_bet` | Run AntsBet for brain extraction <details><summary>Help</summary><small>This step will require the use of a template image which does not match all ages and is much slower than the default synthstrip method. Not recommended.</small></details>| `boolean` | False |  | False |
-| `preproc_run_crop` | Run cropping on the anatomical images. | `boolean` | True |  | False |
-| `synthstrip_weights` | Path to alternative weights for SynthStrip brain extraction. | `string` | None |  | False |
+| `atlas_name` | Name of the atlas to use. This will determine the BIDS atlas to use. Multiple values can be specified. | `string` | BrainnetomeChild |  | False |
+| `atlas_folder` | Path to the directory containing the atlases. This should be a directory containing the atlases in BIDS format. If not specified, will search in the default location ('$projectDir/assets/'). | `string` |  |  | False |
+| `subcortical_rois` | Indexes of the subcortical ROIs in the atlas to use in the QC report. Will mostly be used to properly separate cortical and subcortical ROIs in the QC report. Should be provided as a string of comma-separated values or ranges (e.g. '189:224'). | `string` | 189:224 |  | False |
 
 ### **T1w Processing Options**
 
@@ -63,6 +49,10 @@ Options for T1w processing. In the case where you do not have a T1w image, you c
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
+| `run_t1_denoising` | Run denoising on the T1w images. | `boolean` | True |  | False |
+| `run_t1_n4` | Run N4 bias correction on the T1w images. | `boolean` | True |  | False |
+| `run_t1_resampling` | Run resampling on the T1w images. | `boolean` | True |  | False |
+| `run_t1_crop` | Run cropping on the T1w images. | `boolean` | True |  | False |
 | `t1_denoise_number_of_coils` | Number of coils used in the T1w denoising step. | `integer` | 1 |  | True |
 | `t1_bias_bspline_knot_per_voxel` | Number of B-spline knots per voxel used in the T1w bias correction step. | `number` | 8 |  | True |
 | `t1_bias_shrink_factor` | Shrink factor used in the T1w bias correction step. | `integer` | 4 |  | True |
@@ -77,6 +67,10 @@ Options for T2w preprocessing. In the case where you do not have a T2w image, yo
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
+| `run_t2_denoising` | Run denoising on the T2w images. | `boolean` | True |  | False |
+| `run_t2_n4` | Run N4 bias correction on the T2w images. | `boolean` | True |  | False |
+| `run_t2_resampling` | Run resampling on the T2w images. | `boolean` | True |  | False |
+| `run_t2_crop` | Run cropping on the T2w images. | `boolean` | True |  | False |
 | `t2_denoise_number_of_coils` | Number of coils used in the T2w denoising step. | `integer` | 1 |  | True |
 | `t2_bias_bspline_knot_per_voxel` | Number of B-spline knots per voxel used in the T2w bias correction step. | `number` | 8 |  | True |
 | `t2_bias_shrink_factor` | Shrink factor used in the T2w bias correction step. | `integer` | 4 |  | True |
@@ -101,32 +95,30 @@ Options for DWI preprocessing. You can use these options to customise the behavi
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
-| `skip_dwi_preprocessing` | Skip the DWI preprocessing steps. | `boolean` | False |  | False |
 | `dwi_b0_threshold` | B0 threshold used in the DWI preprocessing steps. | `integer` | 20 |  | False |
 | `dwi_shell_tolerance` | Shell tolerance used in the DWI preprocessing steps. | `integer` | 50 |  | False |
-| `preproc_dwi_run_denoising` | Run denoising on the DWI images. | `boolean` | True |  | False |
+| `run_dwi_denoising` | Run denoising on the DWI images. | `boolean` | True |  | False |
 | `dwi_denoise_patch_size` | Patch size used in the DWI denoising step. | `integer` | 7 |  | True |
-| `preproc_dwi_run_degibbs` | Run Gibbs ringing correction on the DWI images. | `boolean` | False |  | False |
-| `topup_eddy_run_topup` | Run topup in the susceptibility distortion correction step. | `boolean` | True |  | False |
+| `run_dwi_degibbs` | Run Gibbs ringing correction on the DWI images. | `boolean` | False |  | False |
+| `run_dwi_topup` | Run topup in the susceptibility distortion correction step. | `boolean` | True |  | False |
 | `dwi_susceptibility_config_file` | Path to the susceptibility distortion correction config file. | `string` | b02b0.cnf |  | True |
 | `dwi_susceptibility_output_prefix` | Prefix used in the susceptibility distortion correction step. | `string` | topup_results |  | True |
 | `dwi_susceptibility_readout` | Readout time used in the susceptibility distortion correction step. | `number` | 0.04 |  | True |
 | `dwi_susceptibility_encoding_dir` | Encoding direction used in the susceptibility distortion correction step. | `string` | y |  | True |
-| `topup_eddy_run_eddy` | Run eddy in the eddy current correction step. | `boolean` | True |  | False |
+| `run_dwi_eddy` | Run eddy in the eddy current correction step. | `boolean` | True |  | False |
 | `dwi_motion_and_eddy_command` | Command used in the motion and eddy correction step. | `string` | eddy_cpu |  | True |
 | `dwi_motion_and_eddy_bet_f_threshold` | Bet f threshold used in the motion and eddy correction step. | `number` | 0.16 |  | True |
 | `dwi_motion_and_eddy_restore_slices` | Restore slices in the motion and eddy correction step. | `boolean` | True |  | True |
 | `dwi_pwdavg_shells` | Shells used in the PowderAverage step. | `string` |  |  | False |
-| `dwi_run_synthstrip` | Run SynthStrip for brain extraction | `boolean` | True |  | False |
 | `dwi_synthstrip_border` | Brain border used in the SynthStrip brain extraction step. | `integer` | 1 |  | True |
 | `dwi_synthstrip_nocsf` | Exclude CSF from the border in the SynthStrip brain extraction step. | `boolean` | False |  | True |
-| `dwi_synthstrip_weights` | Alternative weights used in the SynthStrip brain extraction step. | `string` | None |  | False |
 | `dwi_bet_f_threshold` | Bet f threshold used in the brain extraction step. | `number` | 0.16 |  | True |
-| `preproc_dwi_run_N4` | Run N4 bias correction on the DWI images. | `boolean` | True |  | False |
+| `run_dwi_n4` | Run N4 bias correction on the DWI images. | `boolean` | True |  | False |
 | `dwi_bias_bspline_knot_per_voxel` | Number of B-spline knots per voxel used in the DWI bias correction step. | `number` | 8 |  | True |
 | `dwi_bias_shrink_factor` | Shrink factor used in the DWI bias correction step. | `integer` | 4 |  | True |
+| `run_dwi_normalize` | Run normalization on the DWI images. | `boolean` | True |  | False |
 | `dwi_normalize_fa_mask_threshold` | FA mask threshold used in the normalization step. | `number` | 0.4 |  | False |
-| `preproc_dwi_run_resampling` | Run resampling on the DWI images. | `boolean` | True |  | False |
+| `run_dwi_resampling` | Run resampling on the DWI images. | `boolean` | True |  | False |
 | `dwi_resample_voxel_size` | Voxel size used in the DWI resampling step. | `integer` | 1 |  | True |
 | `dwi_resample_interp` | Interpolation method used in the DWI resampling step. | `string` | lin |  | True |
 | `dwi_resample_mask_voxel_size` | Voxel size used in the DWI mask resampling step. | `integer` | 1 |  | True |
@@ -138,7 +130,7 @@ Options for diffusion tensor fitting.
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
-| `dti_max_shell_value` | Maximum shell value used in the DTI processing step. | `integer` | 1200 |  | True |
+| `dti_max_shell_value` | Maximum shell value used in the DTI processing step. | `integer` | 1200 |  | False |
 | `dti_shells` | Shells used in the DTI processing step. | `string` |  |  | False |
 
 ### **FRF Options**
@@ -147,12 +139,10 @@ Options for fiber response function (FRF) processing. The FRF is derived from no
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
-| `frf_fa` | Minimum FA threshold to use to compute the FRF. | `number` | 0.7 |  | True |
-| `frf_min_fa` | Minimum FA threshold to use to compute the FRF. | `number` | 0.5 |  | True |
+| `frf_fa` | Initial minimum FA threshold to use to compute the FRF. | `number` | 0.7 |  | True |
+| `frf_min_fa` | If frf_fa does not extract enough voxels, this is the minimum FA threshold that will be tried. | `number` | 0.5 |  | True |
 | `frf_nvox_min` | Minimum number of voxels to include in the computation of the FRF. | `integer` | 300 |  | True |
 | `frf_roi_radius` | Radius of the ROI used to compute the FRF. | `integer` | 20 |  | True |
-| `frf_max_dti_shell_value` | Maximum DTI shell value used. | `integer` | 1200 |  | True |
-| `frf_min_fodf_shell_value` | Minimum FODF shell value used. | `integer` | 700 |  | True |
 | `frf_set_method` | Method used to compute the FRF. (accepted: `ssst`) | `string` | ssst |  | False |
 | `frf_manual_frf` | Manual FRF values.(e.g. '15,4,4'). This is set from the normative curves. Use this option only to apply a single FRF to every participants. For more information, please see [the documentation](https://scilus.github.io/sf-pediatric/guides/priors/). | `string` |  |  | False |
 
@@ -162,7 +152,7 @@ Options for FODF processing.
 
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
-| `fodf_min_fodf_shell_value` | Minimum FODF shell value used. | `integer` | 700 |  | True |
+| `fodf_min_shell_value` | Minimum FODF shell value used. | `integer` | 700 |  | False |
 | `fodf_shells` | Shells used in the FODF processing step. | `string` |  |  | False |
 | `fodf_sh_order` | Spherical harmonics order used in the FODF processing step. | `integer` | 8 |  | False |
 | `fodf_sh_basis` | Spherical harmonics basis used in the FODF processing step. Choices: descoteaux07 or tournier07. (accepted: `descoteaux07`\|`tournier07`) | `string` | descoteaux07 |  | False |
@@ -260,14 +250,14 @@ Options for BundleSeg
 | Parameter | Description | Type | Default | Required | Hidden |
 |-----------|-----------|-----------|-----------|-----------|-----------|
 | `atlas_directory` | Path to the WM bundles atlas directory. <details><summary>Help</summary><small>This allows you to specify a custom atlas for bundle segmentation. If not provided, the default atlas included with the pipeline will be used. NOTE: The provided atlas will be used with all participants without accounting for age.</small></details>| `string` | None |  | False |
-| `minimal_vote_ratio` | Ratio of vote across models to consider a streamline for saving. If you have 5 input models and a ratio of 0.5, you will need at least 3 votes. | `number` | 0.5 |  | False |
-| `outlier_alpha` | Percentage of the length of the tree that clusters of individual streamlines will be pruned. Higher values will remove more streamlines. | `number` | 0.6 |  | False |
+| `minimal_vote_ratio` | Ratio of vote across models to consider a streamline for saving. If you have 5 input models and a ratio of 0.5, you will need at least 3 votes. | `number` | 0.5 |  | True |
+| `outlier_alpha` | Percentage of the length of the tree that clusters of individual streamlines will be pruned. Higher values will remove more streamlines. | `number` | 0.6 |  | True |
 | `nb_points` | Number of points to segment the bundles. | `integer` | 5 |  | False |
 | `colormap` | Colormap to use for coloring the bundles. Color only affects visualization. | `string` | jet |  | False |
 | `use_hyperplane` | If set, will use hyperplane to segment bundles (still experimental), otherwise, will use the euclidean distance. | `boolean` | False |  | False |
 | `use_manhattan` | If set, will use manhattan distance to segment bundles, otherwise, will use the euclidean distance. | `boolean` | False |  | False |
-| `density_weighting` | If set, weight statistics based on the number of voxel going through the voxel. | `boolean` | True |  | False |
-| `normalize_weights` | If set, the weights will be normalized to the [0,1] range. | `boolean` | True |  | False |
+| `density_weighting` | If set, weight statistics based on the number of voxel going through the voxel. | `boolean` | True |  | True |
+| `normalize_weights` | If set, the weights will be normalized to the [0,1] range. | `boolean` | True |  | True |
 | `length_stats` | If set, will output bundles' length. | `boolean` | True |  | False |
 | `endpoints_stats` | If set, will output statistics in endpoints. | `boolean` | True |  | False |
 | `means_std` | If set, will output mean and std values per bundle per metrics. | `boolean` | True |  | False |
@@ -332,18 +322,6 @@ Options for outputting to specific template space.
 | `templateflow_res` | Resolution of the template space. | `integer` | 1 |  | False |
 | `templateflow_cohort` | Cohort to use for the template space (not required for most template, but if it is, simply provide the cohort's number). | `integer` |  |  | False |
 | `templateflow_home` | Path to the TemplateFlow home directory where templates will be downloaded. If you are running the pipeline without internet access, this needs to point to a folder containing predownloaded templates. | `string` | ./templateflow |  | False |
-| `use_template_t2w` | Use the T2w image from the template space (useful with infant data.). | `boolean` | False |  | False |
-
-### **Pipeline profile**
-
-Pipeline profile options. This is a short list of options. For full description, please see [the documentation](https://scilus.github.io/sf-pediatric/guides/usage/#choosing-a-profile)
-
-| Parameter | Description | Type | Default | Required | Hidden |
-|-----------|-----------|-----------|-----------|-----------|-----------|
-| `tracking` | Perform tracking profile. | `boolean` | False |  | True |
-| `bundling` | Perform bundle extraction profile. | `boolean` | False |  | True |
-| `connectomics` | Perform connectomics profile. | `boolean` | False |  | True |
-| `segmentation` | Perform segmentation profile. | `boolean` | False |  | True |
 
 ### **Institutional config options**
 
@@ -366,18 +344,27 @@ Less common options for the pipeline, typically set in a config file.
 |-----------|-----------|-----------|-----------|-----------|-----------|
 | `version` | Display version and exit. | `boolean` |  |  | True |
 | `publish_dir_mode` | Method used to save pipeline results to output directory. (accepted: `symlink`\|`rellink`\|`link`\|`copy`\|`copyNoFollow`\|`move`) <details><summary>Help</summary><small>The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.</small></details>| `string` | copy |  | True |
-| `lean_output` | Do not copy intermediate files to output directory. | `boolean` |  |  | False |
+| `lean_output` | Do not copy intermediate files to output directory. | `boolean` |  |  | True |
 | `email_on_fail` | Email address for completion summary, only when pipeline fails. <details><summary>Help</summary><small>An email address to send a summary email to when the pipeline is completed - ONLY sent if the pipeline does not exit successfully.</small></details>| `string` |  |  | True |
 | `plaintext_email` | Send plain-text email instead of HTML. | `boolean` |  |  | True |
 | `max_multiqc_email_size` | File size limit when attaching MultiQC reports to summary emails. | `string` | 25.MB |  | True |
 | `monochrome_logs` | Do not use coloured log outputs. | `boolean` |  |  | True |
-| `hook_url` | Incoming hook URL for messaging service <details><summary>Help</summary><small>Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.</small></details>| `string` |  |  | True |
 | `multiqc_config` | Custom config file to supply to MultiQC. | `string` |  |  | True |
 | `multiqc_logo` | Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file | `string` |  |  | True |
-| `multiqc_methods_description` | Custom MultiQC yaml file containing HTML including a methods description. | `string` |  |  |  |
+| `multiqc_methods_description` | Custom MultiQC yaml file containing HTML including a methods description. | `string` |  |  | True |
 | `validate_params` | Boolean whether to validate parameters against the schema at runtime | `boolean` | True |  | True |
-| `pipelines_testdata_base_path` | Base URL or local path to location of pipeline test dataset files | `string` | None |  | True |
 | `trace_report_suffix` | Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss. | `string` |  |  | True |
 | `help` | Display the help message. | `['boolean', 'string']` |  |  |  |
 | `help_full` | Display the full detailed help message. | `boolean` |  |  |  |
 | `show_hidden` | Display hidden parameters in the help message (only works when --help or --help_full are provided). | `boolean` |  |  |  |
+
+### **Pipeline profile**
+
+Pipeline profile options. This is a short list of options. For full description, please see [the documentation](https://scilus.github.io/sf-pediatric/guides/usage/#choosing-a-profile)
+
+| Parameter | Description | Type | Default | Required | Hidden |
+|-----------|-----------|-----------|-----------|-----------|-----------|
+| `tracking` | Perform tracking profile. | `boolean` | False |  | True |
+| `bundling` | Perform bundle extraction profile. | `boolean` | False |  | True |
+| `connectomics` | Perform connectomics profile. | `boolean` | False |  | True |
+| `segmentation` | Perform segmentation profile. | `boolean` | False |  | True |
