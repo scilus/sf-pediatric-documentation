@@ -78,7 +78,11 @@
 .sl-markdown-content table th,
 .sl-markdown-content table td:first-child,
 .sl-markdown-content table td:nth-child(3),
-.sl-markdown-content table td:nth-child(5),
+.sl-markdown-content table td:nth-child(5) {
+	white-space: nowrap;
+}
+
+.sl-markdown-content table th:nth-child(6),
 .sl-markdown-content table td:nth-child(6) {
-  white-space: nowrap;
+	display: none;
 }
