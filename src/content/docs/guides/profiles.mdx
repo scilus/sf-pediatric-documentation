@@ -84,13 +84,16 @@ Choose one of these to specify how the pipeline runs:
     Uses Apptainer/Singularity containers. Best for HPC clusters where Docker isn't available.
 
 3. ### **`arm64`** (Experimental)
-    For Mac M1/M2/M3/M4 chips. Combine with docker: `-profile docker,arm64,tracking`
+    For Mac M1/M2/M3/M4 chips. Combine with docker: `-profile docker,arm64,tracking`. This will force Docker to pull ARM containers. Please note that we currently do not have ARM versions of every containers. 
 
-4. ### **`slurm`**
+4. ### **`emulate_amd64`**
+    When running on a Mac M1+ computers, this will tell Docker to emulate AMD architecture. Unless default Docker behavior was previously overridden, this should be set to make the pipeline work on Mac M1+.
+
+5. ### **`slurm`**
     Uses SLURM job scheduler on HPC clusters. Combine with apptainer: `-profile apptainer,slurm,tracking`. More details on how to launch the pipeline on HPC using SLURM can be [found here](/sf-pediatric/guides/nointernet#running-sf-pediatric-using-the-slurm-executor).
 
-5. ### **`gpu`**
-    When GPU(s) are available, use this profile to speed up the `eddy` and `tracking` processes. It is also compatible with SLURM-based HPC environments (you might need to specify the available GPU type using [`--gpu_type`](/sf-pediatric/guides/parameters#inputoutput-options)).
+6. ### **`gpu`**
+    When GPU(s) are available, use this profile to speed up the `eddy` and `tracking` processes. It is also compatible with SLURM-based HPC environments (you need to specify the available GPU type using [`--gpu_type`](/sf-pediatric/guides/parameters#inputoutput-options)).
 </Steps>
 
 ---
