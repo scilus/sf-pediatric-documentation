@@ -18,6 +18,7 @@ The most basic BIDS directory should have a similar structure (note that session
   - **dataset_description.json**
   - **participants.tsv**
   - sub-01
+    - **sub-01_sessions.tsv**
     - ses-01
       - anat
         - sub-01_ses-01_T1w.nii.gz
@@ -43,10 +44,10 @@ unexpected BIDS-related behavior when processing your dataset.
 ### **Required Files**
 
 - `dataset_description.json`: A JSON file describing the dataset.
-- `participants.tsv`: A TSV file listing the participants and their metadata. **`sf-pediatric` requires the participants' age to be supplied within this file, using `age` as the column name. If not available, the pipeline will return an error at runtime.**
+- `participants.tsv` or `*_sessions.tsv` : TSV files listing the participants and their metadata. **`sf-pediatric` requires the participants' age to be supplied either within the top-level `participants.tsv` file or the subject-specific `*_sessions.tsv` files.** In both case, files need to use `age` as the column name. If not available, the pipeline will return an error at runtime.
 
 :::caution[Important!]
-The age should be supplied in **years**. If multiple session are available for a single subject, each session needs to be entered in **different rows**.
+The age should be supplied in **years**. If multiple session are available for a single subject, each session needs to be entered in **different rows**. This applies to both the top-level `participants.tsv` file or the subject-specific `*_sessions.tsv` files.
 :::
 
 ### **`participants.tsv` example**
@@ -61,6 +62,15 @@ The age should be supplied in **years**. If multiple session are available for a
 :::note[Column separator]
 In order for `sf-pediatric` to properly read the `participants.tsv` file, columns need to be **tab-separated**. If the pipeline returns an error regarding age not being correctly entered, this should be the **first validation step** to take (e.g., ensure a single tab is separating each of your columns).
 :::
+
+### **`*_sessions.tsv` example**
+
+Since those files are subject-specific, they typically do not need to contain the `participant_id` column. They should be located alongside the session folders (see [Directory Structure](/sf-pediatric/guides/inputs#directory-structure) section above). Below is an example for sub-test1 with two different sessions.
+
+| session_id   | age |
+| ------------ | --- |
+| ses-baseline | 0.08|
+| ses-time1    | 4   |
 
 
 ### **Mandatory files per subject:**
